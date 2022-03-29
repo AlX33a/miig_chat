@@ -1,5 +1,5 @@
-## django chat backend
+### Django chat backend
 
-# Install python requirements
+**Install python requirements**
 
 pip install -r req.txt
