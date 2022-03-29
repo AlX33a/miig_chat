@@ -1,2 +1,5 @@
-# miig_chat
-Chat was made by MIIGAIK students
+## django chat backend
+
+# Install python requirements
+
+pip install -r req.txt
