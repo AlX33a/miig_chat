@@ -1,5 +1,5 @@
 ## Django chat backend
 
-**Install python requirements**
+**Install python requirements:**
 
-pip install -r req.txt
+'''pip install -r req.txt'''
