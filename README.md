@@ -5,18 +5,6 @@
 ```
 pip install -r req.txt
 ```
-**Run django:**
-
-```
-python manage.py runserver
-```
-
-**Createsuperuser django:**
-
-```
-python manage.py createsuperuser
-```
-
 **Migrate django:**
 
 ```
@@ -28,3 +16,19 @@ python manage.py migrate
 ```
 python manage.py makemigrations
 ```
+
+**Createsuperuser django:**
+
+```
+python manage.py createsuperuser
+```
+
+**Run django:**
+
+```
+python manage.py runserver
+```
+
+
+
+
