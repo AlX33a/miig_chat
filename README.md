@@ -31,5 +31,6 @@ python manage.py runserver
 
 **Tests django requests:**
 
-
+```
 https://disk.yandex.ru/d/NZjynTDmIqOcUQ
+```
