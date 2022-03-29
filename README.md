@@ -1,4 +1,4 @@
-### Django chat backend
+## Django chat backend
 
 **Install python requirements**
 
