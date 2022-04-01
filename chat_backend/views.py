@@ -50,9 +50,12 @@ class APIChat(APIView):
 
 class APIAddUserRoom(APIView):
     def get(self, request):
-        users = User.objects.all()
+        user = request.GET.get("user")
+        users = User.objects.filter(username=user)
         serializer = UserSerializers(users, many=True)
-        return Response(serializer.data)
+        return Response({
+            "data": serializer.data
+        })
 
     def post(self, request):
         room = request.data.get("room")
