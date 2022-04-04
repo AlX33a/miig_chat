@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.shortcuts import render
@@ -15,9 +17,8 @@ class APIRoom(APIView):
     def get(self, request):
         rooms = Room.objects.filter(Q(creator=request.user) | Q(invited=request.user))
         serializer = RoomSerializers(rooms, many=True)
-        fix_serializer = [serializer.data[0]]
-        if len(serializer.data) != 1:
-            fix_serializer += [serializer.data[i] for i in range(1, len(serializer.data)) if serializer.data[i - 1]["id"] != serializer.data[i]["id"]]
+        fix_serializer = []
+        fix_serializer = [odict for odict in serializer.data if odict not in fix_serializer]
         return Response({
             "data": fix_serializer
         })
