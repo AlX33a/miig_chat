@@ -43,6 +43,8 @@
 
 <script>
 
+import axios from "axios";
+
 export default {
   name: 'Sign_Up',
 
@@ -57,18 +59,14 @@ export default {
       this.username = event.target.value;
 
       //логика регистрации
-      this.axios
-          .post('http://127.0.0.1:8000/auth/users/', {'username': this.username, 'password': this.password})
+      axios.post('http://127.0.0.1:8000/auth/users/', {'username': this.username, 'password': this.password})
           .then(response => {
             console.log(response)
             this.$router.push('components/Sign_In')
           })
-          .catch(err => {
-            console.error(err)
-            this.username = "123123"
+          .catch(error => {
+            console.error("There was an error!", error);
           });
-      let err;
-      this.err = err
     },
     inputUsername(event) {
       this.username = event.target.value;
