@@ -44,6 +44,7 @@
 <script>
 
 import axios from "axios";
+//import cookie from "cookie";
 
 export default {
   name: 'Sign_Up',
@@ -55,11 +56,12 @@ export default {
     };
   },
   methods: {
-    register(event) {
-      this.username = event.target.value;
-
+    register() {
+      //{"acces" :  cookie.Default},
       //логика регистрации
-      axios.post('http://127.0.0.1:8000/auth/users/', {'username': this.username, 'password': this.password})
+      axios.post('http://127.0.0.1:8000/auth/users/', {'username': this.username, 'password': this.password}, {headers: {
+          'Content-Type': 'text/plain',
+        }})
           .then(response => {
             console.log(response)
             this.$router.push('components/Sign_In')
