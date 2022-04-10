@@ -7,11 +7,13 @@
 
         <!--Группа кнопок входа и регистрации-->
         <p class="btn_group">
-            <router-link to="components/Sign_In">
-              <a class="btn login" text-decoration="none">
+          <router-link to="components/Sign_In">
+
+          <a class="btn login" text-decoration="none">
                 Вход
-              </a>
-            </router-link>
+          </a>
+
+          </router-link>
           <a class="btn sign_up" text-decoration="none">
             Регистрация
           </a>
