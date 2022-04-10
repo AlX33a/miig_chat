@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/css/home_page_clear.css">
+    <title>Home page</title>
+</head>
+<body>
+    <div class="fullpage">
+    <div class="container">
+    <header>
+        <nav>
+            <button class="menu"></button>
+            <input class="user_search" type="text" placeholder="Search">
+        </nav>
+    </header>
+    <div class="user_array">
+        <ul class="user_ul" type="none">
+            <li class="user_info">
+                <div class="user_li">
+                    <div class="avatar_image">
+                        <img class="avatar_photo" src="./assets/img/avatar.svg" alt="#">
+                    </div>
+                    <div class="username">
+                        <p class="group_user_date">
+                        <span class="username_info" >{{Username}}</span>
+                        <span class="last_messege_date">#</span>
+                        </p>
+                        <p class="draft">
+                            <span class="last-messege_info">#</span>
+                            <span class="unread marker"></span>
+                        </p>
+                    </div>
+                </div>
+            </li>
+            
+        </ul>
+    </div>
+    </div>
+    <div class="chat-page">
+        <div class="chat-info">
+            <img class="chat-avatar" src="./assets/img/avatar.svg" alt="#">
+            <div class="chat-panel">
+            <div class="user_info_text">
+            <p class="chat-username">{{Username}}</p>
+            <p class="online_or_not">{{online}}</p>
+            </div>
+            <div class="nav-btn">
+                <button class="search-button"></button>
+                <button class="three-dots-button"></button>
+            </div>
+            </div>
+        </div>
+        <div class="chat">
+            <div class="out-chat-window">
+            <div class="chat-window">
+                <section class="chat-row guest">
+                    <div class="host-messege">
+                        <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo, ratione.</span>
+                    </div>
+                </section>
+                <section class="chat-row host">
+                    <div class="guest-messege">
+                        <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, assumenda.</span>
+                    </div>
+                </section>
+                <section class="chat-row guest">
+                    <div class="host-messege">
+                        <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo, ratione.</span>
+                    </div>
+                </section>
+                <section class="chat-row guest">
+                    <div class="host-messege">
+                        <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo, ratione.</span>
+                    </div>
+                </section>
+                <section class="chat-row host">
+                    <div class="guest-messege">
+                        <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatem, assumenda.</span>
+                    </div>
+                </section>
+                <section class="chat-row guest">
+                    <div class="host-messege">
+                        <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo, ratione.</span>
+                    </div>
+                </section>
+            </div>
+            </div>
+        <div class="chat-input">
+            <input class="input" type="text" placeholder="Напишите что нибудь" >
+        </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
