@@ -30,7 +30,7 @@
         </div>
       </div>
     </div>
-  </b-form>>
+  </b-form>
 </template>
 
 
