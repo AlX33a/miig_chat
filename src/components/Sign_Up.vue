@@ -61,8 +61,12 @@ export default {
     register() {
       //{"acces" :  cookie.Default},
       //логика регистрации
-      axios.post('http://127.0.0.1:8000/auth/users/', {'username': this.username, 'password': this.password}, {headers: {
-          'Content-Type': 'text/plain',
+      let codusername;
+      codusername = encodeURIComponent(JSON.stringify(this.username))
+      let codpassword;
+      codpassword = encodeURIComponent(JSON.stringify(this.password))
+      axios.post('http://127.0.0.1:8000/auth/users/', {'username': codusername, 'password': codpassword}, {headers: {
+          'Content-Type': 'application/json',
         }})
           .then(response => {
             console.log(response)
