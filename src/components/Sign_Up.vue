@@ -44,9 +44,8 @@
 
 
 <script>
+import $ from "jquery";
 
-import axios from "axios";
-//import cookie from "cookie";
 
 export default {
   name: 'Sign_Up',
@@ -59,22 +58,31 @@ export default {
   },
   methods: {
     register() {
-      //{"acces" :  cookie.Default},
       //логика регистрации
-      let codusername;
-      codusername = encodeURIComponent(JSON.stringify(this.username))
-      let codpassword;
-      codpassword = encodeURIComponent(JSON.stringify(this.password))
-      axios.post('http://127.0.0.1:8000/auth/users/', {'username': codusername, 'password': codpassword}, {headers: {
-          'Content-Type': 'application/json',
-        }})
-          .then(response => {
-            console.log(response)
-            this.$router.push('components/Sign_In')
-          })
-          .catch(error => {
-            console.error("There was an error!", error);
-          });
+      $.ajax({
+        url: "http://127.0.0.1:8000/auth/users/",
+        type: "POST",
+        data: {
+          username: this.username,
+          password: this.password
+        },
+        success: (response) => {
+          console.log(response)
+          this.$router.push('components/Sign_In')
+        },
+        error: (data) => {
+
+          if (data.responseJSON.password){
+            alert(data.responseJSON.password[0])
+          } else if (data.responseJSON.username){
+            alert(data.responseJSON.username[0])
+          }
+
+
+
+        }
+
+      })
     },
     inputUsername(event) {
       this.username = event.target.value;
