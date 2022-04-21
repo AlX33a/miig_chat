@@ -77,22 +77,14 @@ export default {
           } else if (data.responseJSON.username){
             alert(data.responseJSON.username[0])
           }
-
-
-
         }
-
       })
     },
     inputUsername(event) {
       this.username = event.target.value;
-
-      //корректность логина
     },
     inputPassword(event) {
       this.password = event.target.value;
-
-      //сложность пароля
     },
   }
 }
