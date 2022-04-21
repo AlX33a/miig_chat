@@ -45,7 +45,7 @@
 
 <script>
 import $ from "jquery";
-
+import login from "./Sign_In"
 
 export default {
   name: 'Sign_Up',
@@ -68,7 +68,8 @@ export default {
         },
         success: (response) => {
           console.log(response)
-          this.$router.push('components/Sign_In')
+          login()
+          //this.$router.push('components/Sign_In')
         },
         error: (data) => {
 

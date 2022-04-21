@@ -72,6 +72,8 @@ export default {
         success: (response) => {
           console.log(response)
           this.token = response.auth_token
+          sessionStorage.setItem("auth_token", response.auth_token)
+
           this.$router.push('components/Home_Page')
 
 
