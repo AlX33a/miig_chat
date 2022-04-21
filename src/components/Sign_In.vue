@@ -19,7 +19,7 @@
         <!--Инпуты для имени пользователя и пароля-->
         <div class="form-container">
           <p><input v-bind:value="username" @input="inputUsername" id="username" class="form-input username" type="text" placeholder="Имя пользователя"></p>
-          <p><input v-bind:value="password" @input="inputPassword" id="password" class="form-input password" type="password" placeholder="Пароль"></p>
+          <p><input v-bind:value="password" @keyup.enter="login()" @input="inputPassword" id="password" class="form-input password" type="password" placeholder="Пароль"></p>
 
           <!--Кнопка для отправки инфы с инпутов-->
           <div class="container_btn">
@@ -54,12 +54,11 @@ export default {
     return{
       username: "",
       password: "",
-      token: ""
+      token: "",
     };
   },
   methods: {
-    login(event) {
-      event.preventDefault();
+    login() {
       //логика авторицации
 
       $.ajax({
@@ -73,7 +72,6 @@ export default {
           console.log(response)
           this.token = response.auth_token
           sessionStorage.setItem("auth_token", response.auth_token)
-
           this.$router.push('components/Home_Page')
 
 
@@ -84,11 +82,6 @@ export default {
         }
       })
     },
-  setLogined(token) {
-
-    //сохранение токена
-    console.log(token)
-  },
   inputUsername(event) {
     this.username = event.target.value;
   },
