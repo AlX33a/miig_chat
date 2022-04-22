@@ -3,9 +3,10 @@
   <body>
   <div class="fullpage">
     <div class="container">
+
       <nav>
         <button class="menu"></button>
-        <input @keyup.enter="Search_User" @input="inputsearchuser" class="user_search" type="text" placeholder="Search">
+        <input v-on:value="this.SearchUsers" @keyup.enter="Search_User" class="user_search" type="text" placeholder="Search">
       </nav>
       <div class="user_array">
         <ul class="user_ul">
@@ -45,54 +46,52 @@ export default {
     };
   },
   methods: {
-    inputsearchuser(event) {
-      this.SearchUsers = event.target.value;
-    },
 
     update_rooms(){
       $.ajax({
         url: "http://127.0.0.1:8000/api/v1/room/",
-        type: "POST",
+        type: "GET",
         data: {
-          Authorization: sessionStorage.getItem('auth_token'),
+          Authorization: ('Token '+this.token),
         },
         success: (response) => {
           console.log(response)
-
-
         },
-        error: () => {
-          this.$router.push('components/Sign_In')
-        }
       })
     },
 
     Search_User(){
       $.ajax({
-        url: "http://127.0.0.1:8000/api/v1/room/",
+        url: "http://127.0.0.1:8000/api/v1/users/",
         type: "GET",
         data: {
           user: this.SearchUsers,
         },
-
         success: (response) => {
-          console.log(response)
-
-
-        },
-        error: () => {
-          alert("Пользователь не найден")
+          console.log(response.data[0]["id"])
+          this.id = response.data[0]["id"]
+          this.SearchUsers = ""
+          this.Update()
         }
       })
+    },
+
+    Update(event){
+      event.target.reset()
     }
   },
+
   mounted(){
+
     this.token = sessionStorage.getItem('auth_token')
     this.username = sessionStorage.getItem('username')
-
+    if (!this.token){
+      this.$router.push('components/Sign_In')
+    }
     this.SearchUsers = this.username
     this.Search_User()
     this.SearchUsers = ""
+    this.update_rooms()
   }
 }
 
