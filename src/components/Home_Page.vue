@@ -5,7 +5,7 @@
     <div class="container">
       <nav>
         <button class="menu"></button>
-        <input class="user_search" type="text" placeholder="Search">
+        <input @keyup.enter="Search_User" @input="inputsearchuser" class="user_search" type="text" placeholder="Search">
       </nav>
       <div class="user_array">
         <ul class="user_ul">
@@ -27,21 +27,73 @@
 
 
 <script>
+import $ from "jquery";
 
 export default {
   name: 'Home_Page',
 
   Data() {
     return {
+      token: "",
+      username: "",
+      id: 1,
       Message: "",
       SearchUsers: "",
-      SearchMessage: "",
-      conversations: [
-        {id: 1, name: "gh", }
-      ]
+      rooms: [
+
+      ],
     };
   },
-  methods: {}
+  methods: {
+    inputsearchuser(event) {
+      this.SearchUsers = event.target.value;
+    },
+
+    update_rooms(){
+      $.ajax({
+        url: "http://127.0.0.1:8000/api/v1/room/",
+        type: "POST",
+        data: {
+          Authorization: sessionStorage.getItem('auth_token'),
+        },
+        success: (response) => {
+          console.log(response)
+
+
+        },
+        error: () => {
+          this.$router.push('components/Sign_In')
+        }
+      })
+    },
+
+    Search_User(){
+      $.ajax({
+        url: "http://127.0.0.1:8000/api/v1/room/",
+        type: "GET",
+        data: {
+          user: this.SearchUsers,
+        },
+
+        success: (response) => {
+          console.log(response)
+
+
+        },
+        error: () => {
+          alert("Пользователь не найден")
+        }
+      })
+    }
+  },
+  mounted(){
+    this.token = sessionStorage.getItem('auth_token')
+    this.username = sessionStorage.getItem('username')
+
+    this.SearchUsers = this.username
+    this.Search_User()
+    this.SearchUsers = ""
+  }
 }
 
 </script>
