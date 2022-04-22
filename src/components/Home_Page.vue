@@ -51,9 +51,7 @@ export default {
       $.ajax({
         url: "http://127.0.0.1:8000/api/v1/room/",
         type: "GET",
-        data: {
-          Authorization: ('Token '+this.token),
-        },
+        data: {headers: {'Authorization': "Token " + sessionStorage.getItem('auth_token')}},
         success: (response) => {
           console.log(response)
         },
