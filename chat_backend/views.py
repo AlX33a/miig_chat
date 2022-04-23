@@ -17,9 +17,24 @@ class APIRoom(APIView):
         serializer = RoomSerializers(rooms, many=True)
         fix_serializer = []
         fix_serializer = [odict for odict in serializer.data if odict not in fix_serializer]
+
+        id_rooms = [odict["id"] for odict in fix_serializer]
+        last_messages = []
+        for ids in id_rooms:
+            chat = Chat.objects.filter(room=ids)
+            chat_serializer = ChatSerializers(chat, many=True)
+
+            if chat_serializer.data:
+                var = chat_serializer.data[-1]
+                var.pop("user")
+                var["id"] = ids
+                last_messages += [var]
+
         return Response({
-            "data": fix_serializer
+            "data": fix_serializer,
+            "messages": last_messages
         })
+
 
     def post(self, request):
         Room.objects.create(creator=request.user)
