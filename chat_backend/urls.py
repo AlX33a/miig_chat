@@ -5,4 +5,5 @@ urlpatterns = [
     path('room/', APIRoom.as_view()),
     path('chat/', APIChat.as_view()),
     path('users/', APIAddUserRoom.as_view()),
+    path('adduser/', APIAddUser.as_view()),
 ]

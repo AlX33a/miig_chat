@@ -12,11 +12,21 @@ from .serializers import (RoomSerializers, ChatSerializers, ChatPostSerializers,
 class APIRoom(APIView):
     """Вывод данных комнаты, гет запрос"""
     permission_classes = [permissions.IsAuthenticated, ]
+
     def get(self, request):
         rooms = Room.objects.filter(Q(creator=request.user) | Q(invited=request.user))
         serializer = RoomSerializers(rooms, many=True)
         fix_serializer = []
-        fix_serializer = [odict for odict in serializer.data if odict not in fix_serializer]
+        for odict in serializer.data:
+            if odict not in fix_serializer:
+                creator = odict.pop("creator")
+                invited = odict["invited"]
+                if str(request.user) == creator["username"]:
+                    odict["invited"] = invited["username"]
+                    fix_serializer += [odict]
+                else:
+                    odict["invited"] = creator["username"]
+                    fix_serializer += [odict]
 
         id_rooms = [odict["id"] for odict in fix_serializer]
         last_messages = []
@@ -35,10 +45,10 @@ class APIRoom(APIView):
             "messages": last_messages
         })
 
-
     def post(self, request):
         Room.objects.create(creator=request.user)
         return Response(status=201)
+
 
 class APIChat(APIView):
     permission_classes = [permissions.IsAuthenticated, ]
@@ -83,5 +93,21 @@ class APIAddUserRoom(APIView):
             return Response(status=400)
 
 
+class APIAddUser(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
 
-
+    def post(self, request):
+        user = request.data.get("user")
+        users = User.objects.filter(username=user)
+        serializer = UserSerializers(users, many=True)
+        if serializer.data:
+            room_test = Room.objects.all()
+            print(room_test, room_test[0])
+            #room = Room.objects.create(creator=request.user)
+            #room.invited.add(serializer.data[0]["id"])
+            #room.save()
+            return Response(status=201)
+        else:
+            return Response({
+                "Пользователь не найден."
+            })
