@@ -16,13 +16,15 @@ class APIRoom(APIView):
     def get(self, request):
         rooms = Room.objects.filter(Q(creator=request.user) | Q(invited=request.user))
         serializer = RoomSerializers(rooms, many=True)
+        print(serializer.data)
         fix_serializer = []
         for odict in serializer.data:
             if odict not in fix_serializer:
                 creator = odict.pop("creator")
-                invited = odict["invited"]
+                print(creator)
+                invited = odict.pop("invited")
                 if str(request.user) == creator["username"]:
-                    odict["invited"] = invited["username"]
+                    odict["invited"] = invited[0]["username"]
                     fix_serializer += [odict]
                 else:
                     odict["invited"] = creator["username"]
@@ -98,16 +100,26 @@ class APIAddUser(APIView):
 
     def post(self, request):
         user = request.data.get("user")
+        if str(request.user) == user:
+            return Response({
+                    "Самому себе написать нельзя."
+                }, status=400)
         users = User.objects.filter(username=user)
         serializer = UserSerializers(users, many=True)
+        print(serializer.data, request.user)
         if serializer.data:
-            room_test = Room.objects.all()
-            print(room_test, room_test[0])
-            #room = Room.objects.create(creator=request.user)
-            #room.invited.add(serializer.data[0]["id"])
-            #room.save()
-            return Response(status=201)
+            if not (Room.objects.filter(Q(creator=request.user) & Q(invited=serializer.data[0]["id"])) or
+                    Room.objects.filter(Q(creator=serializer.data[0]["id"]) & Q(invited=request.user))):
+                room = Room.objects.create(creator=request.user)
+                room.invited.add(serializer.data[0]["id"])
+                room.save()
+                return Response(status=201)
+            else:
+                return Response({
+                    "Диалог уже создан."
+                }, status=400)
+
         else:
             return Response({
                 "Пользователь не найден."
-            })
+            },  status=400)
