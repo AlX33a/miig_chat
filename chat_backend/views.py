@@ -6,23 +6,21 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Room, Chat
-from .serializers import (RoomSerializers, ChatSerializers, ChatPostSerializers, UserSerializers)
+from .serializers import (RoomSerializers, ChatSerializers, ChatPostSerializers, UserSerializers, ChatSerializersFIX)
 
 
 class APIRoom(APIView):
-    """Вывод данных комнаты, гет запрос"""
     permission_classes = [permissions.IsAuthenticated, ]
 
     def get(self, request):
         rooms = Room.objects.filter(Q(creator=request.user) | Q(invited=request.user))
         serializer = RoomSerializers(rooms, many=True)
-        print(serializer.data)
         fix_serializer = []
         for odict in serializer.data:
             if odict not in fix_serializer:
                 creator = odict.pop("creator")
-                print(creator)
                 invited = odict.pop("invited")
+                date = odict.pop("date")
                 if str(request.user) == creator["username"]:
                     odict["invited"] = invited[0]["username"]
                     fix_serializer += [odict]
@@ -30,21 +28,17 @@ class APIRoom(APIView):
                     odict["invited"] = creator["username"]
                     fix_serializer += [odict]
 
-        id_rooms = [odict["id"] for odict in fix_serializer]
-        last_messages = []
-        for ids in id_rooms:
-            chat = Chat.objects.filter(room=ids)
-            chat_serializer = ChatSerializers(chat, many=True)
-
-            if chat_serializer.data:
-                var = chat_serializer.data[-1]
-                var.pop("user")
-                var["id"] = ids
-                last_messages += [var]
+                chat = Chat.objects.filter(room=odict["id"])
+                chat_serializer = ChatSerializersFIX(chat, many=True)
+                if chat_serializer.data:
+                    odict["text"] = chat_serializer.data[-1]["text"]
+                    odict["date"] = chat_serializer.data[-1]["date"]
+                else:
+                    odict["text"] = "Нажми, чтобы начать диалог!"
+                    odict["date"] = date
 
         return Response({
             "data": fix_serializer,
-            "messages": last_messages
         })
 
     def post(self, request):
@@ -102,11 +96,10 @@ class APIAddUser(APIView):
         user = request.data.get("user")
         if str(request.user) == user:
             return Response({
-                    "Самому себе написать нельзя."
-                }, status=400)
+                "Самому себе написать нельзя."
+            }, status=400)
         users = User.objects.filter(username=user)
         serializer = UserSerializers(users, many=True)
-        print(serializer.data, request.user)
         if serializer.data:
             if not (Room.objects.filter(Q(creator=request.user) & Q(invited=serializer.data[0]["id"])) or
                     Room.objects.filter(Q(creator=serializer.data[0]["id"]) & Q(invited=request.user))):
@@ -114,12 +107,9 @@ class APIAddUser(APIView):
                 room.invited.add(serializer.data[0]["id"])
                 room.save()
                 return Response(status=201)
-            else:
-                return Response({
-                    "Диалог уже создан."
-                }, status=400)
-
-        else:
             return Response({
-                "Пользователь не найден."
-            },  status=400)
+                "Диалог уже создан."
+            }, status=400)
+        return Response({
+            "Пользователь не найден."
+        }, status=400)
