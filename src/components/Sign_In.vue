@@ -18,13 +18,13 @@
 
         <!--Инпуты для имени пользователя и пароля-->
         <div class="form-container">
-          <p><input v-bind:value="username" id="username" class="form-input username" type="text" placeholder="Имя пользователя"></p>
-          <p><input v-bind:value="password" id="password" class="form-input password" type="password" placeholder="Пароль"></p>
+          <p><input v-bind:value="username" @input="inputUsername" id="username" class="form-input username" type="text" placeholder="Имя пользователя"></p>
+          <p><input v-bind:value="password" @keyup.enter="login()" @input="inputPassword" id="password" class="form-input password" type="password" placeholder="Пароль"></p>
 
           <!--Кнопка для отправки инфы с инпутов-->
           <div class="container_btn">
             <p class="form-buttons">
-              <button class="form-button">Войти</button>
+              <button v-on:click="login" class="form-button">Войти</button>
             </p>
           </div>
         </div>
@@ -44,6 +44,8 @@
 
 
 <script>
+import $ from "jquery";
+
 
 export default {
   name: 'Sign_In',
@@ -52,23 +54,42 @@ export default {
     return{
       username: "",
       password: "",
+      token: "",
     };
   },
-  methods:{
-    login(event){
-      event.preventDefault();
-
+  methods: {
+    login() {
       //логика авторицации
+
+      $.ajax({
+        url: "http://127.0.0.1:8000/auth/token/login/",
+        type: "POST",
+        data: {
+          username: this.username,
+          password: this.password
+        },
+        success: (response) => {
+          console.log(response)
+          this.token = response.auth_token
+          sessionStorage.setItem("auth_token", this.token)
+          sessionStorage.setItem("username", this.username)
+          this.$router.push('components/Home_Page')
+
+
+        },
+        error: (data) => {
+          console.log(this.password)
+          alert(data.responseJSON.non_field_errors[0])
+        }
+      })
     },
-    setLogined(token){
-
-      //сохранение токена
-      console.log(token)
-    }
+  inputUsername(event) {
+    this.username = event.target.value;
   },
-  components: {
-
-  }
+  inputPassword(event) {
+    this.password = event.target.value;
+  },
+}
 }
 </script>
 

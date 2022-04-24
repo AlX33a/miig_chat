@@ -1,6 +1,6 @@
 <template>
 
-  <div class="user_array">
+  <div class="user_array" v-for="room in rooms" v-bind:key = "room.idroom">
     <ul class="user_ul">
       <li class="user_info">
         <div class="user_li">
@@ -9,11 +9,11 @@
           </div>
           <div class="username">
             <p class="group_user_date">
-              <span class="username_info" >Username</span>
+              <span class="username_info" >{{room.nameuser}}</span>
               <span class="last_messege_date">#</span>
             </p>
             <p class="draft">
-              <span class="last-messege_info">#</span>
+              <span class="last-messege_info">{{room.text}}</span>
               <span class="unread marker"></span>
             </p>
           </div>
@@ -30,11 +30,15 @@
 <script>
 
 export default {
+  props:{
+    rooms: {
+      type: Array
+    }
+  },
   name: 'Names_List',
 
   Data() {
     return {
-      MessageOnList: "",
 
     };
   },

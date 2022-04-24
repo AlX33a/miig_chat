@@ -3,15 +3,13 @@
   <body>
   <div class="fullpage">
     <div class="container">
+
       <nav>
         <button class="menu"></button>
-        <input class="user_search" type="text" placeholder="Search">
+        <input v-on:value="this.SearchUsers" @input="inputUsername" @keyup.enter="Search_User" class="user_search" type="text" placeholder="Search">
       </nav>
       <div class="user_array">
-        <ul class="user_ul">
-
-
-        </ul>
+        <Names_List v-bind:room="rooms"/>
       </div>
     </div>
     <div class="chat-page">
@@ -27,21 +25,130 @@
 
 
 <script>
+import Names_List from '@/components/Names_List'
+import $ from "jquery";
 
 export default {
+  components: {
+    Names_List
+  },
   name: 'Home_Page',
 
   Data() {
     return {
+      rooms: [
+        {
+          idroom: 2,
+          lastdate: 123124,
+          nameuser: "artem",
+          text: "room is open"
+        },
+        {
+          idroom: 1,
+          lastdate: 3423,
+          nameuser: "georg",
+          text: "room is open"
+        }
+      ],
+      token: "",
+      username: "",
       Message: "",
       SearchUsers: "",
-      SearchMessage: "",
-      conversations: [
-        {id: 1, name: "gh", }
-      ]
+      lastdate: "",
+      idroom: "",
+      nameuser: "",
+      text: "",
     };
   },
-  methods: {}
+  methods: {
+    create_room(){
+      const newroom = {
+        idroom: this.idroom,
+        lastdate: this.lastdate,
+        nameuser: this.nameuser,
+        text: this.text
+      }
+      console.log(this.rooms)
+      this.rooms.push(newroom)
+
+    },
+
+    inputUsername(event) {
+      this.SearchUsers = event.target.value;
+    },
+
+    update_rooms(){
+      $.ajax({
+        url: "http://127.0.0.1:8000/api/v1/room/",
+        type: "GET",
+        headers: {'Authorization': "Token " + sessionStorage.getItem('auth_token')},
+        success: (response) => {
+          console.log(response)
+          const da = response.data
+          const mes = response.messages
+          console.log(da)
+          console.log(mes)
+          let nummes = 9999
+
+          while (da.length){
+            for (let i = 0; i<mes.length; i++){
+              if (da[0]["id"] === mes[i]["id"]){
+                this.idroom = mes[i]["id"]
+                this.nameuser = da[0]["invited"]
+                this.text = mes[i]["text"]
+                this.lastdate = Number(mes[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":",""))
+                this.create_room()
+
+              }
+            }
+            if (nummes===9999){
+              this.idroom = da[0]["id"]
+              this.nameuser = da[0]["invited"]
+              this.text = "открыта комната"
+              this.lastdate = Number(da[0]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":",""))
+              this.create_room()
+            }
+            nummes = 9999
+            delete da[0]
+            this.idroom = ''
+            this.nameuser = ''
+            this.text = ''
+            this.lastdate = ''
+          }
+
+        },
+      })
+    },
+    Search_User(){
+      $.ajax({
+        url: "http://127.0.0.1:8000/api/v1/adduser/",
+        type: "POST",
+        headers: {'Authorization': "Token " + sessionStorage.getItem('auth_token')},
+        data: {
+          user: this.SearchUsers,
+        },
+        success: (response) => {
+          console.log(response)
+          this.SearchUsers = ""
+          this.$router.go()
+        },
+        error: (data) => {
+          alert(data.responseJSON)
+          this.$router.go()
+        }
+      })
+    },
+  },
+
+  mounted(){
+
+    this.token = sessionStorage.getItem('auth_token')
+    this.username = sessionStorage.getItem('username')
+    if (!this.token){
+      this.$router.push('components/Sign_In')
+    }
+    this.update_rooms()
+  }
 }
 
 </script>

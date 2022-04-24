@@ -22,7 +22,7 @@
         <!--Инпуты для имени пользователя и пароля-->
         <div class="form-container">
           <p><input v-bind:value="username" @input="inputUsername" id="username" class="form-input username" type="text" placeholder="Имя пользователя"></p>
-          <p><input v-bind:value="password" @input="inputPassword" id="password" class="form-input password" type="password" placeholder="Пароль"></p>
+          <p><input v-bind:value="password" @keyup.enter="register()" @input="inputPassword" id="password" class="form-input password" type="password" placeholder="Пароль"></p>
 
           <!--Кнопка для отправки инфы с инпутов-->
           <div class="container_btn">
@@ -54,6 +54,7 @@ export default {
     return {
       username: "",
       password: "",
+
     };
   },
   methods: {
@@ -68,7 +69,9 @@ export default {
         },
         success: (response) => {
           console.log(response)
-          this.$router.push('components/Sign_In')
+          this.login()
+          //this.$router.push('components/Sign_In')
+
         },
         error: (data) => {
 
@@ -77,23 +80,40 @@ export default {
           } else if (data.responseJSON.username){
             alert(data.responseJSON.username[0])
           }
-
-
-
         }
-
       })
     },
     inputUsername(event) {
       this.username = event.target.value;
-
-      //корректность логина
     },
     inputPassword(event) {
       this.password = event.target.value;
-
-      //сложность пароля
     },
+
+
+    login() {
+      $.ajax({
+        url: "http://127.0.0.1:8000/auth/token/login/",
+        type: "POST",
+        data: {
+          username: this.username,
+          password: this.password
+        },
+        success: (response) => {
+          console.log(response)
+          this.token = response.auth_token
+          this.$router.push('components/Home_Page')
+          sessionStorage.setItem("auth_token", this.token)
+          sessionStorage.setItem("username", this.username)
+
+
+        },
+        error: (data) => {
+          console.log(this.password)
+          alert(data.responseJSON.non_field_errors[0])
+        }
+      })
+    }
   }
 }
 </script>
