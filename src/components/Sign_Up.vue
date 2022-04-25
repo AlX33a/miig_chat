@@ -1,5 +1,5 @@
 <template>
-  <b-form @submit="register">
+  <b-form @submit="Register">
 
     <!--Основная карточка с блоками для регистрации-->
     <div class="form-div">
@@ -21,13 +21,13 @@
 
         <!--Инпуты для имени пользователя и пароля-->
         <div class="form-container">
-          <p><input v-bind:value="username" @input="inputUsername" id="username" class="form-input username" type="text" placeholder="Имя пользователя"></p>
-          <p><input v-bind:value="password" @keyup.enter="register()" @input="inputPassword" id="password" class="form-input password" type="password" placeholder="Пароль"></p>
+          <p><input v-bind:value="Username" @input="Input_Username" id="username" class="form-input username" type="text" placeholder="Имя пользователя"></p>
+          <p><input v-bind:value="Password" @keyup.enter="Register" @input="Input_Password" id="password" class="form-input password" type="password" placeholder="Пароль"></p>
 
           <!--Кнопка для отправки инфы с инпутов-->
           <div class="container_btn">
             <p class="form-buttons">
-              <button v-on:click="register" class="form-button">Зарегестрироваться</button>
+              <button v-on:click="Register" class="form-button">Зарегестрироваться</button>
             </p>
           </div>
         </div>
@@ -52,24 +52,24 @@ export default {
 
   Data() {
     return {
-      username: "",
-      password: "",
+      Username: "",
+      Password: "",
 
     };
   },
   methods: {
-    register() {
+    Register() {
       //логика регистрации
       $.ajax({
         url: "http://127.0.0.1:8000/auth/users/",
         type: "POST",
         data: {
-          username: this.username,
-          password: this.password
+          username: this.Username,
+          password: this.Password
         },
         success: (response) => {
           console.log(response)
-          this.login()
+          this.Login()
           //this.$router.push('components/Sign_In')
 
         },
@@ -83,33 +83,33 @@ export default {
         }
       })
     },
-    inputUsername(event) {
-      this.username = event.target.value;
+    Input_Username(event) {
+      this.Username = event.target.value;
     },
-    inputPassword(event) {
-      this.password = event.target.value;
+    Input_Password(event) {
+      this.Password = event.target.value;
     },
 
 
-    login() {
+    Login() {
       $.ajax({
         url: "http://127.0.0.1:8000/auth/token/login/",
         type: "POST",
         data: {
-          username: this.username,
-          password: this.password
+          username: this.Username,
+          password: this.Password
         },
         success: (response) => {
           console.log(response)
-          this.token = response.auth_token
+          this.Token = response.auth_token
           this.$router.push('components/Home_Page')
-          sessionStorage.setItem("auth_token", this.token)
-          sessionStorage.setItem("username", this.username)
+          sessionStorage.setItem("AuthToken", this.Token)
+          sessionStorage.setItem("Username", this.Username)
 
 
         },
         error: (data) => {
-          console.log(this.password)
+          console.log(this.Password)
           alert(data.responseJSON.non_field_errors[0])
         }
       })

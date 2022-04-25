@@ -18,13 +18,13 @@
 
         <!--Инпуты для имени пользователя и пароля-->
         <div class="form-container">
-          <p><input v-bind:value="username" @input="inputUsername" id="username" class="form-input username" type="text" placeholder="Имя пользователя"></p>
-          <p><input v-bind:value="password" @keyup.enter="login()" @input="inputPassword" id="password" class="form-input password" type="password" placeholder="Пароль"></p>
+          <p><input v-bind:value="Username" @input="Input_Username" id="username" class="form-input username" type="text" placeholder="Имя пользователя"></p>
+          <p><input v-bind:value="Password" @keyup.enter="Login" @input="Input_Password" id="password" class="form-input password" type="password" placeholder="Пароль"></p>
 
           <!--Кнопка для отправки инфы с инпутов-->
           <div class="container_btn">
             <p class="form-buttons">
-              <button v-on:click="login" class="form-button">Войти</button>
+              <button v-on:click="Login" class="form-button">Войти</button>
             </p>
           </div>
         </div>
@@ -52,42 +52,42 @@ export default {
 
   Data(){
     return{
-      username: "",
-      password: "",
-      token: "",
+      Username: "",
+      Password: "",
+      Token: "",
     };
   },
   methods: {
-    login() {
+    Login() {
       //логика авторицации
 
       $.ajax({
         url: "http://127.0.0.1:8000/auth/token/login/",
         type: "POST",
         data: {
-          username: this.username,
-          password: this.password
+          username: this.Username,
+          password: this.Password
         },
         success: (response) => {
           console.log(response)
-          this.token = response.auth_token
-          sessionStorage.setItem("auth_token", this.token)
-          sessionStorage.setItem("username", this.username)
+          this.Token = response.auth_token
+          sessionStorage.setItem("AuthToken", this.Token)
+          sessionStorage.setItem("Username", this.Username)
           this.$router.push('components/Home_Page')
 
 
         },
         error: (data) => {
-          console.log(this.password)
+          console.log(this.Password)
           alert(data.responseJSON.non_field_errors[0])
         }
       })
     },
-  inputUsername(event) {
-    this.username = event.target.value;
+  Input_Username(event) {
+    this.Username = event.target.value;
   },
-  inputPassword(event) {
-    this.password = event.target.value;
+  Input_Password(event) {
+    this.Password = event.target.value;
   },
 }
 }

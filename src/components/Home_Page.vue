@@ -6,10 +6,10 @@
 
       <nav>
         <button class="menu"></button>
-        <input v-on:value="this.SearchUsers" @input="inputUsername" @keyup.enter="Search_User" class="user_search" type="text" placeholder="Search">
+        <input v-on:value="this.SearchUsers" @input="Input_Username" @keyup.enter="Search_User" class="user_search" type="text" placeholder="Search">
       </nav>
       <div class="user_array">
-        <Names_List v-bind:room="rooms"/>
+        <Names_List v-bind:Room="Rooms"/>
       </div>
     </div>
     <div class="chat-page">
@@ -36,94 +36,40 @@ export default {
 
   Data() {
     return {
-      rooms: [
-        {
-          idroom: 2,
-          lastdate: 123124,
-          nameuser: "artem",
-          text: "room is open"
-        },
-        {
-          idroom: 1,
-          lastdate: 3423,
-          nameuser: "georg",
-          text: "room is open"
-        }
+      Rooms: [
       ],
-      token: "",
-      username: "",
-      Message: "",
+      Token: "",
+      Username: "",
       SearchUsers: "",
-      lastdate: "",
-      idroom: "",
-      nameuser: "",
-      text: "",
     };
   },
   methods: {
-    create_room(){
-      const newroom = {
-        idroom: this.idroom,
-        lastdate: this.lastdate,
-        nameuser: this.nameuser,
-        text: this.text
-      }
-      console.log(this.rooms)
-      this.rooms.push(newroom)
-
-    },
-
-    inputUsername(event) {
+    Input_Username(event) {
       this.SearchUsers = event.target.value;
     },
 
-    update_rooms(){
+    Update_Rooms(){
       $.ajax({
         url: "http://127.0.0.1:8000/api/v1/room/",
         type: "GET",
-        headers: {'Authorization': "Token " + sessionStorage.getItem('auth_token')},
+        headers: {'Authorization': "Token " + sessionStorage.getItem('AuthToken')},
         success: (response) => {
           console.log(response)
-          const da = response.data
-          const mes = response.messages
-          console.log(da)
-          console.log(mes)
-          let nummes = 9999
-
-          while (da.length){
-            for (let i = 0; i<mes.length; i++){
-              if (da[0]["id"] === mes[i]["id"]){
-                this.idroom = mes[i]["id"]
-                this.nameuser = da[0]["invited"]
-                this.text = mes[i]["text"]
-                this.lastdate = Number(mes[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":",""))
-                this.create_room()
-
-              }
-            }
-            if (nummes===9999){
-              this.idroom = da[0]["id"]
-              this.nameuser = da[0]["invited"]
-              this.text = "открыта комната"
-              this.lastdate = Number(da[0]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":",""))
-              this.create_room()
-            }
-            nummes = 9999
-            delete da[0]
-            this.idroom = ''
-            this.nameuser = ''
-            this.text = ''
-            this.lastdate = ''
+          const Da = response.data
+          console.log(Da)
+          while (Da.length){
+            this.Rooms.push({IdRoom: Da[0]["id"], NameUser: Da[0]["invited"], Text: Da[0]["text"], LastDate: Number(Da[0]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":",""))})
+            delete Da[0]
           }
-
-        },
+        }
       })
     },
+
     Search_User(){
       $.ajax({
         url: "http://127.0.0.1:8000/api/v1/adduser/",
         type: "POST",
-        headers: {'Authorization': "Token " + sessionStorage.getItem('auth_token')},
+        headers: {'Authorization': "Token " + sessionStorage.getItem('AuthToken')},
         data: {
           user: this.SearchUsers,
         },
@@ -142,12 +88,12 @@ export default {
 
   mounted(){
 
-    this.token = sessionStorage.getItem('auth_token')
-    this.username = sessionStorage.getItem('username')
+    this.token = sessionStorage.getItem('AuthToken')
+    this.username = sessionStorage.getItem('Username')
     if (!this.token){
       this.$router.push('components/Sign_In')
     }
-    this.update_rooms()
+    this.Update_Rooms()
   }
 }
 

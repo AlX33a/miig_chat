@@ -1,6 +1,6 @@
 <template>
 
-  <div class="user_array" v-for="room in rooms" v-bind:key = "room.idroom">
+  <div class="user_array" v-for="Room in Rooms" v-bind:key = "Room.IdRoom">
     <ul class="user_ul">
       <li class="user_info">
         <div class="user_li">
@@ -9,11 +9,11 @@
           </div>
           <div class="username">
             <p class="group_user_date">
-              <span class="username_info" >{{room.nameuser}}</span>
+              <span class="username_info" >{{Room.NameUser}}</span>
               <span class="last_messege_date">#</span>
             </p>
             <p class="draft">
-              <span class="last-messege_info">{{room.text}}</span>
+              <span class="last-messege_info">{{Room.Text}}</span>
               <span class="unread marker"></span>
             </p>
           </div>
