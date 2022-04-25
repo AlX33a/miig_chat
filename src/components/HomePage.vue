@@ -9,7 +9,7 @@
         <input v-on:value="this.SearchUsers" @input="Input_Username" @keyup.enter="Search_User" class="user_search" type="text" placeholder="Search">
       </nav>
       <div class="user_array">
-        <Names_List v-bind:Room="Rooms"/>
+        <NamesList v-bind:Room="Rooms"/>
       </div>
     </div>
     <div class="chat-page">
@@ -25,14 +25,14 @@
 
 
 <script>
-import Names_List from '@/components/Names_List'
+import NamesList from '@/components/NamesList'
 import $ from "jquery";
 
 export default {
   components: {
-    Names_List
+    NamesList
   },
-  name: 'Home_Page',
+  name: 'HomePage',
 
   Data() {
     return {
@@ -91,7 +91,7 @@ export default {
     this.token = sessionStorage.getItem('AuthToken')
     this.username = sessionStorage.getItem('Username')
     if (!this.token){
-      this.$router.push('components/Sign_In')
+      this.$router.push('components/SignIn')
     }
     this.Update_Rooms()
   }

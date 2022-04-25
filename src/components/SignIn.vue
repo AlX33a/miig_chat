@@ -9,11 +9,11 @@
           <a class="btn login" text-decoration="none">
             Вход
           </a>
-            <router-link to="components/Sign_Up">
-              <a class="btn sign_up" text-decoration="none">
-                Регистрация
-              </a>
-            </router-link>
+          <router-link to="components/Sign_Up">
+            <a class="btn sign_up" text-decoration="none">
+              Регистрация
+            </a>
+          </router-link>
         </p>
 
         <!--Инпуты для имени пользователя и пароля-->
@@ -48,7 +48,7 @@ import $ from "jquery";
 
 
 export default {
-  name: 'Sign_In',
+  name: 'SignIn',
 
   Data(){
     return{
@@ -73,7 +73,7 @@ export default {
           this.Token = response.auth_token
           sessionStorage.setItem("AuthToken", this.Token)
           sessionStorage.setItem("Username", this.Username)
-          this.$router.push('components/Home_Page')
+          this.$router.push('components/HomePage')
 
 
         },
@@ -83,13 +83,13 @@ export default {
         }
       })
     },
-  Input_Username(event) {
-    this.Username = event.target.value;
-  },
-  Input_Password(event) {
-    this.Password = event.target.value;
-  },
-}
+    Input_Username(event) {
+      this.Username = event.target.value;
+    },
+    Input_Password(event) {
+      this.Password = event.target.value;
+    },
+  }
 }
 </script>
 

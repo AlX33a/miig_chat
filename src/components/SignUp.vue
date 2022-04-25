@@ -9,9 +9,9 @@
         <p class="btn_group">
           <router-link to="components/Sign_In">
 
-          <a class="btn login" text-decoration="none">
-                Вход
-          </a>
+            <a class="btn login" text-decoration="none">
+              Вход
+            </a>
 
           </router-link>
           <a class="btn sign_up" text-decoration="none">
@@ -48,7 +48,7 @@ import $ from "jquery";
 
 
 export default {
-  name: 'Sign_Up',
+  name: 'SignUp',
 
   Data() {
     return {
@@ -70,8 +70,6 @@ export default {
         success: (response) => {
           console.log(response)
           this.Login()
-          //this.$router.push('components/Sign_In')
-
         },
         error: (data) => {
 
@@ -102,7 +100,7 @@ export default {
         success: (response) => {
           console.log(response)
           this.Token = response.auth_token
-          this.$router.push('components/Home_Page')
+          this.$router.push('components/HomePage')
           sessionStorage.setItem("AuthToken", this.Token)
           sessionStorage.setItem("Username", this.Username)
 

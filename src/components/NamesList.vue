@@ -35,7 +35,7 @@ export default {
       type: Array
     }
   },
-  name: 'Names_List',
+  name: 'NamesList',
 
   Data() {
     return {
