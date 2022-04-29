@@ -28,16 +28,17 @@
 import NamesList from '@/components/NamesList'
 import $ from "jquery";
 
+let Roomers = [];
 export default {
   components: {
     NamesList
   },
   name: 'HomePage',
 
+
   Data() {
     return {
-      Rooms: [
-      ],
+      Rooms: [],
       Token: "",
       Username: "",
       SearchUsers: "",
@@ -54,13 +55,13 @@ export default {
         type: "GET",
         headers: {'Authorization': "Token " + sessionStorage.getItem('AuthToken')},
         success: (response) => {
-          console.log(response)
           const Da = response.data
-          console.log(Da)
-          while (Da.length){
-            this.Rooms.push({IdRoom: Da[0]["id"], NameUser: Da[0]["invited"], Text: Da[0]["text"], LastDate: Number(Da[0]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":",""))})
-            delete Da[0]
+          for (let i = 0; i<Da.length; i++){
+            Roomers.push({IdRoom: Da[i]["id"], NameUser: Da[i]["invited"], Text: Da[i]["text"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
+
           }
+          this.Rooms = Roomers
+          console.log(this.Rooms)
         }
       })
     },

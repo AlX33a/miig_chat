@@ -9,7 +9,7 @@
           <a class="btn login" text-decoration="none">
             Вход
           </a>
-          <router-link to="components/Sign_Up">
+          <router-link to="components/SignUp">
             <a class="btn sign_up" text-decoration="none">
               Регистрация
             </a>
