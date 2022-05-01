@@ -1,19 +1,29 @@
 from django.contrib import admin
-from chat_backend.models import Room, Chat
+from .models import Dialogue, ChatToDialogue  # , Discussion, ChatToDiscussion
 
 
-class RoomAdmin(admin.ModelAdmin):
-    """Комнаты чата"""
-    list_display = ("creator", "invited_user", "date")
+class DialogueAdmin(admin.ModelAdmin):
+    list_display = ("creator", "invited", "date")
 
-    def invited_user(self, obj):
+
+class ChatToDialogueAdmin(admin.ModelAdmin):
+    list_display = ("dialogue", "user", "message", "date")
+
+
+class DiscussionAdmin(admin.ModelAdmin):
+    list_display = ("creator", "users_invited", "date")
+
+    @staticmethod
+    def users_invited(obj):
         return "\n".join([user.username for user in obj.invited.all()])
 
 
-class ChatAdmin(admin.ModelAdmin):
-    """Диалоги"""
-    list_display = ("room", "user", "text", "date")
+class ChatToDiscussionAdmin(admin.ModelAdmin):
+    list_display = ("dialogue", "user", "message", "date")
 
 
-admin.site.register(Chat, ChatAdmin)
-admin.site.register(Room, RoomAdmin)
+admin.site.register(Dialogue, DialogueAdmin)
+admin.site.register(ChatToDialogue, ChatToDialogueAdmin)
+
+# admin.site.register(Discussion, DiscussionAdmin)
+# admin.site.register(ChatToDiscussion, ChatToDiscussionAdmin)

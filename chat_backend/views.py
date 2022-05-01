@@ -1,115 +1,91 @@
 from django.db.models import Q
 from django.contrib.auth.models import User
-from django.shortcuts import render
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Room, Chat
-from .serializers import (RoomSerializers, ChatSerializers, ChatPostSerializers, UserSerializers, ChatSerializersFIX)
+from .models import Dialogue, ChatToDialogue
+from .serializers import (DialogueSerializers, ChatSerializers, UserSerializers, ChatDialogueSerializers,
+                          ChatPostSerializers)
 
 
-class APIRoom(APIView):
+class APIDialogue(APIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
-    def get(self, request):
-        rooms = Room.objects.filter(Q(creator=request.user) | Q(invited=request.user))
-        serializer = RoomSerializers(rooms, many=True)
-        fix_serializer = []
-        for odict in serializer.data:
-            if odict not in fix_serializer:
-                creator = odict.pop("creator")
-                invited = odict.pop("invited")
-                date = odict.pop("date")
-                if str(request.user) == creator["username"]:
-                    odict["invited"] = invited[0]["username"]
-                    fix_serializer += [odict]
-                else:
-                    odict["invited"] = creator["username"]
-                    fix_serializer += [odict]
+    @staticmethod
+    def get(request):
+        dialogues = Dialogue.objects.filter(Q(creator=request.user) | Q(invited=request.user))
+        dialogue_serializer = DialogueSerializers(dialogues, many=True).data
 
-                chat = Chat.objects.filter(room=odict["id"])
-                chat_serializer = ChatSerializersFIX(chat, many=True)
-                if chat_serializer.data:
-                    odict["text"] = chat_serializer.data[-1]["text"]
-                    odict["date"] = chat_serializer.data[-1]["date"]
-                else:
-                    odict["text"] = "Нажми, чтобы начать диалог!"
-                    odict["date"] = date
+        for index_odict in range(len(dialogue_serializer)):
 
-        return Response({
-            "data": fix_serializer,
-        })
+            creator = dialogue_serializer[index_odict].pop("creator")["username"]
+            invited = dialogue_serializer[index_odict].pop("invited")["username"]
+            date = dialogue_serializer[index_odict].pop("date")
 
-    def post(self, request):
-        Room.objects.create(creator=request.user)
-        return Response(status=201)
+            if str(request.user) == creator:
+                dialogue_serializer[index_odict]["invited"] = invited
+            else:
+                dialogue_serializer[index_odict]["invited"] = creator
 
+            chat = ChatToDialogue.objects.filter(dialogue=dialogue_serializer[index_odict]["id"])
+            chat_serializer = ChatSerializers(chat, many=True).data
 
-class APIChat(APIView):
-    permission_classes = [permissions.IsAuthenticated, ]
+            if chat_serializer:
+                dialogue_serializer[index_odict]["message"] = chat_serializer[-1]["message"]
+                dialogue_serializer[index_odict]["date"] = chat_serializer[-1]["date"]
+            else:
+                dialogue_serializer[index_odict]["message"] = "Нажми, чтобы начать диалог!"
+                dialogue_serializer[index_odict]["date"] = date
 
-    # permission_classes = [permissions.AllowAny, ]
-    def get(self, request):
-        room = request.GET.get("room")
-        chat = Chat.objects.filter(room=room)
-        serializer = ChatSerializers(chat, many=True)
-        return Response({
-            "data": serializer.data
-        })
+        return Response({"date": dialogue_serializer})
 
-    def post(self, request):
-        # room = request.data.get("room")
-        chat = ChatPostSerializers(data=request.data)
-        if chat.is_valid():
-            chat.save(user=request.user)
-            return Response(status=201)
-        else:
-            return Response(status=400)
-
-
-class APIAddUserRoom(APIView):
-    def get(self, request):
-        user = request.GET.get("user")
-        users = User.objects.filter(username=user)
-        serializer = UserSerializers(users, many=True)
-        return Response({
-            "data": serializer.data
-        })
-
-    def post(self, request):
-        room = request.data.get("room")
-        user = request.data.get("user")
-        try:
-            room = Room.objects.get(id=room)
-            room.invited.add(user)
-            room.save()
-            return Response(status=201)
-        except:
-            return Response(status=400)
-
-
-class APIAddUser(APIView):
-    permission_classes = [permissions.IsAuthenticated, ]
-
-    def post(self, request):
+    @staticmethod
+    def post(request):
         user = request.data.get("user")
         if str(request.user) == user:
-            return Response({
-                "Самому себе написать нельзя."
-            }, status=400)
-        users = User.objects.filter(username=user)
-        serializer = UserSerializers(users, many=True)
-        if serializer.data:
-            if not (Room.objects.filter(Q(creator=request.user) & Q(invited=serializer.data[0]["id"])) or
-                    Room.objects.filter(Q(creator=serializer.data[0]["id"]) & Q(invited=request.user))):
-                room = Room.objects.create(creator=request.user)
-                room.invited.add(serializer.data[0]["id"])
-                room.save()
+            return Response({"data": "Самому себе написать нельзя."}, status=400)
+
+        invited_user = User.objects.filter(username=user)
+        invited_user_serializer = UserSerializers(invited_user, many=True).data
+
+        if invited_user_serializer:
+            if not (Dialogue.objects.filter(Q(creator=request.user) & Q(invited=invited_user_serializer[0]["id"])) or
+                    Dialogue.objects.filter(Q(creator=invited_user_serializer[0]["id"]) & Q(invited=request.user))):
+
+                Dialogue.objects.create(creator=request.user, invited=invited_user[0]).save()
+
                 return Response(status=201)
-            return Response({
-                "Диалог уже создан."
-            }, status=400)
-        return Response({
-            "Пользователь не найден."
-        }, status=400)
+            return Response({"data": "Диалог уже создан."}, status=400)
+        return Response({"data": "Пользователь не найден."}, status=400)
+
+class APIChatDialogue(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    # permission_classes = [permissions.AllowAny, ]
+
+    @staticmethod
+    def get(request):
+        dialogue_id = request.GET.get("dialogue")
+
+        dialogue = ChatToDialogue.objects.filter(dialogue=dialogue_id)
+        dialogue_serializer = ChatDialogueSerializers(dialogue, many=True).data
+
+        for index_odict in range(len(dialogue_serializer)):
+            dialogue_serializer[index_odict]["user"] = dialogue_serializer[index_odict]["user"]["username"]
+
+        return Response({"data": dialogue_serializer})
+
+    @staticmethod
+    def post(request):
+        chat = ChatPostSerializers(data=request.data)
+
+        if chat.is_valid():
+            dialogues = Dialogue.objects.filter(id=request.data.get("dialogue"))
+            dialogue_serializer = DialogueSerializers(dialogues, many=True).data
+
+            if str(request.user) in dialogue_serializer[0]["creator"]['username'] or\
+               str(request.user) in dialogue_serializer[0]["invited"]['username']:
+                chat.save(user=request.user)
+                return Response(status=201)
+            return Response({"data": "Вы не состоите в диалоге."}, status=400)
+        return Response({"data": "Данные не действительны."}, status=400)
