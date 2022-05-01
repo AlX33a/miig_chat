@@ -38,7 +38,7 @@ class APIDialogue(APIView):
                 dialogue_serializer[index_odict]["message"] = "Нажми, чтобы начать диалог!"
                 dialogue_serializer[index_odict]["date"] = date
 
-        return Response({"date": dialogue_serializer})
+        return Response({"data": dialogue_serializer})
 
     @staticmethod
     def post(request):
