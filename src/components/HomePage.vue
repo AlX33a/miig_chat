@@ -76,9 +76,8 @@ export default {
         headers: {'Authorization': "Token " + sessionStorage.getItem('AuthToken')},
         success: (response) => {
           const Da = response.data
-          console.log(Da)
           for (let i = 0; i<Da.length; i++){
-            Roomers.push({IdRoom: Da[i]["id"], NameUser: Da[i]["invited"], Text: Da[i]["text"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
+            Roomers.push({IdRoom: Da[i]["id"], NameUser: Da[i]["invited"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
           }
           this.Rooms = Roomers
           console.log(this.Rooms)
