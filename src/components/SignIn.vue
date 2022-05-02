@@ -50,7 +50,7 @@ import $ from "jquery";
 export default {
   name: 'SignIn',
 
-  Data(){
+  data(){
     return{
       Username: "",
       Password: "",

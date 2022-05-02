@@ -50,7 +50,7 @@ import $ from "jquery";
 export default {
   name: 'SignUp',
 
-  Data() {
+  data() {
     return {
       Username: "",
       Password: "",
@@ -60,26 +60,30 @@ export default {
   methods: {
     Register() {
       //логика регистрации
-      $.ajax({
-        url: "http://127.0.0.1:8000/auth/users/",
-        type: "POST",
-        data: {
-          username: this.Username,
-          password: this.Password
-        },
-        success: (response) => {
-          console.log(response)
-          this.Login()
-        },
-        error: (data) => {
+      if (this.Username.length>12){
+        alert("Логин не должен быть длинее 12 символов!")
+      }else {
+        $.ajax({
+          url: "http://127.0.0.1:8000/auth/users/",
+          type: "POST",
+          data: {
+            username: this.Username,
+            password: this.Password
+          },
+          success: (response) => {
+            console.log(response)
+            this.Login()
+          },
+          error: (data) => {
 
-          if (data.responseJSON.password){
-            alert(data.responseJSON.password[0])
-          } else if (data.responseJSON.username){
-            alert(data.responseJSON.username[0])
+            if (data.responseJSON.password) {
+              alert(data.responseJSON.password[0])
+            } else if (data.responseJSON.username) {
+              alert(data.responseJSON.username[0])
+            }
           }
-        }
-      })
+        })
+      }
     },
     Input_Username(event) {
       this.Username = event.target.value;

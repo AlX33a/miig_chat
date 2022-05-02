@@ -1,31 +1,23 @@
 <template>
-
-
-    <section class="chat-row guest">
-      <div class="host-messege">
-        <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Explicabo, ratione.</span>
-        <p class="time-send-row">
-          <span></span>
-          <span class="time-send">15:48</span>
-        </p>
-      </div>
-    </section>
-
-
+  <div class="chat-input">
+    <input class="input" type="text" placeholder="Напишите что нибудь" >
+  </div>
 </template>
 
-
-
 <script>
-
-
+export default {
+  name: "InputMessage",
+  data(){
+    return{
+      Message: "",
+    }
+  }
+}
 
 </script>
 
+<style>
 
-
-
-<style scoped>
 body{
   margin: 0;
   padding: 0;
@@ -335,4 +327,5 @@ nav{
   min-height: 100%;
   min-width: 100%;
 }
+
 </style>
