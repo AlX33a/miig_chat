@@ -1,25 +1,27 @@
 <template>
 
-  <div class="user_array" v-for="Room in Rooms" v-bind:key = "Room.IdRoom">
-    <ul class="user_ul">
-      <li class="user_info">
-        <div class="user_li">
-          <div class="avatar_image">
-            <img class="avatar_photo" src="../img/avatar.svg" alt="#">
+  <div class="user_array">
+    <div class="user_array">
+      <ul class="user_ul">
+        <li class="user_info" v-for="Room in Rooms" v-bind:key = "Room.IdRoom">
+          <div class="user_li">
+            <div class="avatar_image">
+              <img class="avatar_photo" src="../img/avatar.svg" alt="#">
+            </div>
+            <div class="username">
+              <p class="group_user_date">
+                <span class="username_info" >{{Room.NameUser}}</span>
+                <span class="last_messege_date">{{Room.Time}}</span>
+              </p>
+              <p class="draft">
+                <span class="last-messege_info">{{Room.Text}}</span>
+                <span class="unread marker"></span>
+              </p>
+            </div>
           </div>
-          <div class="username">
-            <p class="group_user_date">
-              <span class="username_info" >{{Room.NameUser}}</span>
-              <span class="last_messege_date">#</span>
-            </p>
-            <p class="draft">
-              <span class="last-messege_info">{{Room.Text}}</span>
-              <span class="unread marker"></span>
-            </p>
-          </div>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 
 </template>
@@ -31,7 +33,7 @@
 
 export default {
   props:{
-    rooms: {
+    Rooms: {
       type: Array
     }
   },

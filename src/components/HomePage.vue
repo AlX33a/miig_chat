@@ -8,29 +8,7 @@
         <button class="menu"></button>
         <input v-on:value="this.SearchUsers" @input="Input_Username" @keyup.enter="Search_User" class="user_search" type="text" placeholder="Search">
       </nav>
-      <div class="user_array">
-        <div class="user_array" v-for="Room in Rooms" v-bind:key = "Room.LastDate">
-          <ul class="user_ul">
-            <li class="user_info">
-              <div class="user_li">
-                <div class="avatar_image">
-                  <img class="avatar_photo" src="../img/avatar.svg" alt="#">
-                </div>
-                <div class="username">
-                  <p class="group_user_date">
-                    <span class="username_info" >{{Room.NameUser}}</span>
-                    <span class="last_messege_date">{{Room.Time}}</span>
-                  </p>
-                  <p class="draft">
-                    <span class="last-messege_info">{{Room.Text}}</span>
-                    <span class="unread marker"></span>
-                  </p>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
+      <NamesList v-bind:Rooms="Rooms"/>
     </div>
     <div class="chat-page">
 
@@ -45,13 +23,13 @@
 
 
 <script>
-//import NamesList from '@/components/NamesList'
+import NamesList from '@/components/NamesList'
 import $ from "jquery";
 
 export default {
-//  components: {
-//    NamesList
-//  },
+  components: {
+    NamesList
+  },
   name: 'HomePage',
 
 
@@ -78,6 +56,7 @@ export default {
           for (let i = 0; i<Da.length; i++){
             this.Rooms.push({IdRoom: Da[i]["id"], NameUser: Da[i]["invited"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
           }
+          this.Rooms.sort((prev, next) => next.LastDate - prev.LastDate)
           console.log(this.Rooms)
         }
       })
