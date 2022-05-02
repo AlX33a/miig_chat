@@ -8,15 +8,40 @@
         <button class="menu"></button>
         <input v-on:value="this.SearchUsers" @input="Input_Username" @keyup.enter="Search_User" class="user_search" type="text" placeholder="Search">
       </nav>
-      <NamesList v-bind:Rooms="Rooms" v-on:click="visible=!visible"/>
+      <NamesList v-bind:Rooms="Rooms"/>
     </div>
     <div class="chat-page">
       <div class="chat-info">
-
+        <img class="chat-avatar" src="../img/avatar.svg" alt="#">
+        <div class="chat-panel">
+          <div class="user_info_text">
+            <p class="chat-username">{{ChoiceName}}</p>
+          </div>
+          <div class="nav-btn">
+            <button class="logout-button" @click="Go_Sign_In"></button>
+          </div>
+        </div>
       </div>
-      <div class="chat">
-        <div class="out-chat-window">
-
+      <div class="chat" v-show="!visible">
+        <div class="out-chat-window" v-for="Message in Messages" v-bind:key = "Message.LastDate">
+            <section class="chat-row guest" v-if="Message.Name===Username">
+              <div class="host-messege">
+                <span>{{Message.Text}}</span>
+                <p class="time-send-row">
+                  <span></span>
+                  <span class="time-send">{{Message.Time}}</span>
+                </p>
+              </div>
+            </section>
+            <section class="chat-row host" v-else>
+              <div class="guest-messege">
+                <span>{{Message.Text}}</span>
+                <p class="time-send-row">
+                  <span></span>
+                  <span class="time-send">{{Message.Time}}</span>
+                </p>
+              </div>
+            </section>
         </div>
         <div class="chat-input">
           <input v-on:value="this.Message" @input="Input_Message" @keyup.enter="New_Message" class="input" type="text" placeholder="Напишите что нибудь" >
@@ -47,6 +72,7 @@ export default {
   data() {
     return {
       Rooms: [],
+      Messages: [],
       Token: "",
       Username: "",
       SearchUsers: "",
@@ -64,6 +90,7 @@ export default {
     Input_Message(event){
       this.Message = event.target.value;
     },
+
 
     New_Message(){
       if (this.Message.length>499){
@@ -99,7 +126,6 @@ export default {
             this.Rooms.push({IdRoom: Da[i]["id"], NameUser: Da[i]["invited"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
           }
           this.Rooms.sort((prev, next) => next.LastDate - prev.LastDate)
-          console.log(this.Rooms)
         }
       })
     },
@@ -123,6 +149,7 @@ export default {
         }
       })
     },
+
     Update_Message(){
       $.ajax({
         url: "http://127.0.0.1:8000/api/v1/chat/",
@@ -132,22 +159,34 @@ export default {
           dialogue: this.IdRoomChoice,
         },
         success: (response) => {
-          console.log(response)
+          const Da = response.data
+          for (let i = 0; i<Da.length; i++){
+            this.Messages.push({Name: Da[i]["user"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(8, 2)+"."+Da[i]["date"].substr(5, 2)+"."+Da[i]["date"].substr(0, 2)+" "+Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
+          }
+          this.Messages.sort((prev, next) => prev.LastDate - next.LastDate)
+          console.log(this.Messages)
         }
       })
+    },
+
+    Go_Sign_In(){
+      this.$router.push('components/SignIn')
     }
   },
 
   mounted(){
 
-    this.token = sessionStorage.getItem('AuthToken')
-    this.username = sessionStorage.getItem('Username')
+    this.Token = sessionStorage.getItem('AuthToken')
+    this.Username = sessionStorage.getItem('Username')
     this.ChoiceName = sessionStorage.getItem('ChoiceName')
     this.IdRoomChoice = sessionStorage.getItem('IdRoomChoice')
-    //if (this.ChoiceName!==""){
-      //this.Update_Message()
-    //}
-    if (!this.token){
+    console.log(sessionStorage.getItem('ChoiceName'))
+    console.log(sessionStorage.getItem('IdRoomChoice'))
+    if (this.ChoiceName!==""){
+      this.Update_Message()
+      this.visible = false
+    }
+    if (!this.Token){
       this.$router.push('components/SignIn')
     }
     this.Update_Rooms()

@@ -48,7 +48,7 @@ export default {
     Choice(NameChoice, IdRoomChoice){
       sessionStorage.setItem("ChoiceName", NameChoice)
       sessionStorage.setItem("IdRoomChoice", IdRoomChoice)
-
+      this.$router.go()
     }
   }
 }
@@ -187,7 +187,8 @@ nav{
 }
 .username{
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  flex-wrap: nowrap;
   max-width: 100%;
   max-height: 3rem;
 }

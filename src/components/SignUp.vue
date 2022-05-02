@@ -116,6 +116,14 @@ export default {
         }
       })
     }
+  },
+
+  mounted() {
+
+    sessionStorage.setItem('AuthToken', "")
+    sessionStorage.setItem('Username', "")
+    sessionStorage.setItem('ChoiceName', "")
+    sessionStorage.setItem('IdRoomChoice', "")
   }
 }
 </script>
@@ -129,6 +137,8 @@ export default {
 
 
 <style scoped>
+
+
 .form-button:hover{
   background-color: lightskyblue;
 }

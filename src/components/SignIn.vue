@@ -89,6 +89,14 @@ export default {
     Input_Password(event) {
       this.Password = event.target.value;
     },
+  },
+
+  mounted() {
+
+    sessionStorage.setItem('AuthToken', "")
+    sessionStorage.setItem('Username', "")
+    sessionStorage.setItem('ChoiceName', "")
+    sessionStorage.setItem('IdRoomChoice', "")
   }
 }
 </script>
