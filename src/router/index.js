@@ -8,6 +8,11 @@ import NamesList from "../components/NamesList"
 
 const routes = [
     {
+        path: "/",
+        name: "Start",
+        component: HomePage,
+    },
+    {
         path: "/SignIn",
         name: "SignIn",
         component: SignIn,
