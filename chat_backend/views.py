@@ -88,4 +88,4 @@ class APIChatDialogue(APIView):
                 chat.save(user=request.user)
                 return Response(status=201)
             return Response({"data": "Вы не состоите в диалоге."}, status=400)
-        return Response({"data": "Данные не действительны."}, status=400)
+        return Response({"data": "Длина сообщения не может превышать 500 символов."}, status=400)
