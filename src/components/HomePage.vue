@@ -23,7 +23,8 @@
         </div>
       </div>
       <div class="chat" v-show="!visible">
-        <div class="out-chat-window" v-for="Message in Messages" v-bind:key = "Message.LastDate">
+        <div class="out-chat-window">
+          <div v-for="Message in Messages" v-bind:key = "Message.LastDate">
             <section class="chat-row guest" v-if="Message.Name===Username">
               <div class="host-messege">
                 <span>{{Message.Text}}</span>
@@ -42,6 +43,7 @@
                 </p>
               </div>
             </section>
+          </div>
         </div>
         <div class="chat-input">
           <input v-on:value="this.Message" @input="Input_Message" @keyup.enter="New_Message" class="input" type="text" placeholder="Напишите что нибудь" >
@@ -203,7 +205,7 @@ export default {
 body{
   margin: 0;
   padding: 0;
-  font-family: Arial, Helvetica, sans-serif;
+  font: 16px Helvetica;
   background: url("../img/1639788469_27-catherineasquithgallery-com-p-rozovii-fon-minimalistichnii-71.jpg");
   background-size: cover;
 
@@ -297,12 +299,12 @@ nav{
 
 /*Элемент списка*/
 .user_li{
+  margin-right: 1rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   height: 4rem;
   padding-left: .3rem;
-  margin-right: 2.2rem;
   border-radius: 15px;
   transition-duration: .25s;
 
@@ -314,11 +316,10 @@ nav{
 
 /*Содержимое элемента*/
 .group_user_date{
-  max-width: 10rem;
-  min-width: 100%;
+  max-width: calc(100% - 3.6rem);
   display: flex;
   justify-content: space-between;
-  margin-top: 0;
+  margin-top: 0rem;
   margin-bottom: 1rem;
 }
 .avatar_image{
@@ -329,12 +330,13 @@ nav{
 .username{
   display: flex;
   flex-wrap: wrap;
-  max-width: 10rem;
+  max-width: 100%;
   max-height: 3rem;
 }
 .username_info{
   display: flex;
   width: 30rem;
+  font-weight: bold;
 }
 .last_messege_date{
   display: flex;
@@ -359,12 +361,12 @@ nav{
   flex-direction: column;
   min-height: 100%;
   visibility: visible;
-  flex: 1 1 auto;
+  width: 75%;
 }
 
 /*Информация касаемо пользователя, блок сверху*/
 .chat-info{
-  flex: 1 1 auto;
+  width: auto;
   background-color: #fff;
   display: inline-flex;
   flex-direction: row;
@@ -374,18 +376,24 @@ nav{
   border-left: 1px solid grey;
   box-shadow: 0px 1px 5px -1px rgba(0,0,0,.21);
 }
-.online_or_not{
-  margin-top: .2rem;
+.chat-panel{
+  display: flex;
+  justify-content: space-between;
+  flex: 1 1 auto;
+}
+.user_info_text{
+  flex: 1 1 auto;
+  text-align: center;
 }
 .chat-username{
-  margin-top: .3rem;
+  padding-top: 1rem;
 }
 .chat-avatar{
   max-width: 3rem;
   max-height: 3rem;
   margin: .25rem;
 }
-.search-button{
+.logout-button{
   border-radius: 25px;
   height: 3rem;
   width: 3rem;
@@ -394,55 +402,41 @@ nav{
   border: transparent;
   margin-right: .5rem;
   background-color: #fff;
-  background-image: url("../img/icons8-search.svg");
+  background-image: url("../img/logout-icon.svg");
   background-repeat: no-repeat;
-  background-position: .5rem .5rem;
+  background-position: calc(.6rem) calc(2rem / 4);
+  transition-duration: .25s;
 }
-.three-dots-button{
-  border-radius: 25px;
-  height: 3rem;
-  width: 3rem;
-  background-size: 2.2rem;
-  margin-top: .25rem;
-  border: transparent;
-  margin-right: .5rem;
-  background-color: #fff;
-  background-image: url("../img/three-dots.svg");
-  background-repeat: no-repeat;
-  background-position: .4rem .4rem;
+.logout-button:hover{
+  background-color: rgb(243, 243, 243);
 }
-.search-button:hover, .three-dots-button:hover{
-  background-color: rgba(224, 224, 224, 0.637);
-}
-.chat-panel{
-  display: flex;
-  justify-content: space-between;
-  flex: 1 1 auto;
-}
+
 
 /*Основная область чата*/
 .chat{
   display: flex;
   align-items: center;
   flex-direction: column;
-  height: 90vh;
-  flex: 1 1 auto;
+  max-height: 90vh;
+  width: 100%;
+  justify-content: flex-end;
+  z-index: 1000;
 }
 
 /*Внешний контейнер чата*/
 .out-chat-window{
   display: flex;
-  justify-content: center;
-  flex: 1 1 auto;
+  align-items: center;
+  justify-content: space-around;
 }
 /*Основной контейнер чата*/
 .chat-window{
-  min-height: 100%;
+  display: flex;
+  max-width: 60%;
+  height: calc(90vh - 5rem);
   padding-left: 1rem;
   padding-right: 1rem;
-  display: inline-flex;
   flex-direction: column-reverse;
-  justify-content: flex-start;
   scrollbar-width: none;
   scrollbar-color: grey;
   overflow-y: auto;
@@ -453,8 +447,6 @@ nav{
   display: flex;
   margin-top: 1rem;
   margin-bottom: 1rem;
-  flex-wrap: wrap;
-
 }
 /*Классы guest и host находятся вместе с классом chat-row и отвечают за то,
 к какой стороне прикрелено сообщение */
@@ -492,13 +484,13 @@ nav{
 
 /*Блок ввода сообщений*/
 .chat-input{
-  min-height: 3rem;
+  height: 3rem;
   min-width: 60%;
   padding-right: 1.25rem;
   display: flex;
   align-items: center;
   padding-top: .5rem;
-  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 .input{
   margin: .3rem;
