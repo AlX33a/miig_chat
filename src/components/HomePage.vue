@@ -84,7 +84,21 @@ export default {
       Message: "",
     };
   },
+
+
   methods: {
+
+    ready() {
+      window.setInterval(() => {
+        this.Update_Rooms();
+        if (this.ChoiceName!==""){
+          this.Update_Message()
+          this.visible = false
+        }
+        console.log("1")
+      },5000);
+    },
+
     Input_Username(event) {
       this.SearchUsers = event.target.value;
     },
@@ -124,6 +138,7 @@ export default {
         headers: {'Authorization': "Token " + sessionStorage.getItem('AuthToken')},
         success: (response) => {
           const Da = response.data
+          this.Rooms = []
           for (let i = 0; i<Da.length; i++){
             this.Rooms.push({IdRoom: Da[i]["id"], NameUser: Da[i]["invited"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
           }
@@ -162,6 +177,7 @@ export default {
         },
         success: (response) => {
           const Da = response.data
+          this.Messages = []
           for (let i = 0; i<Da.length; i++){
             this.Messages.push({Name: Da[i]["user"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(8, 2)+"."+Da[i]["date"].substr(5, 2)+"."+Da[i]["date"].substr(0, 2)+" "+Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
           }
@@ -192,6 +208,7 @@ export default {
       this.$router.push('components/SignIn')
     }
     this.Update_Rooms()
+    this.ready()
   }
 }
 
