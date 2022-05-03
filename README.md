@@ -17,6 +17,12 @@ python manage.py migrate
 python manage.py makemigrations
 ```
 
+**Migrate django (second):**
+
+```
+python manage.py migrate
+```
+
 **Createsuperuser django:**
 
 ```
