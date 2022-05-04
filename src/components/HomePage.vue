@@ -24,25 +24,27 @@
       </div>
       <div class="chat" v-show="!visible">
         <div class="out-chat-window">
-          <div v-for="Message in Messages" v-bind:key = "Message.LastDate">
-            <section class="chat-row guest" v-if="Message.Name===Username">
-              <div class="host-messege">
-                <span>{{Message.Text}}</span>
-                <p class="time-send-row">
-                  <span></span>
-                  <span class="time-send">{{Message.Time}}</span>
-                </p>
-              </div>
-            </section>
-            <section class="chat-row host" v-else>
-              <div class="guest-messege">
-                <span>{{Message.Text}}</span>
-                <p class="time-send-row">
-                  <span></span>
-                  <span class="time-send">{{Message.Time}}</span>
-                </p>
-              </div>
-            </section>
+          <div class="chat-window">
+            <div v-for="Message in Messages" v-bind:key = "Message.LastDate">
+              <section class="chat-row guest" v-if="Message.Name!==Username">
+                <div class="host-messege">
+                  <span class="Message-Text">{{Message.Text}}</span>
+                  <p class="time-send-row">
+                    <span></span>
+                    <span class="time-send">{{Message.Time}}</span>
+                  </p>
+                </div>
+              </section>
+              <section class="chat-row host" v-else>
+                <div class="guest-messege">
+                  <span class="Message-Text">{{Message.Text}}</span>
+                  <p class="time-send-row">
+                    <span></span>
+                    <span class="time-send">{{Message.Time}}</span>
+                  </p>
+                </div>
+              </section>
+            </div>
           </div>
         </div>
         <div class="chat-input">
@@ -90,12 +92,13 @@ export default {
 
     ready() {
       window.setInterval(() => {
-        this.Update_Rooms();
-        if (this.ChoiceName!==""){
-          this.Update_Message()
-          this.visible = false
-        }
-        console.log("1")
+            if (this.Token) {
+              this.Update_Rooms();
+              if (this.ChoiceName !== "") {
+                this.Update_Message()
+                this.visible = false
+              }
+            }
       },5000);
     },
 
@@ -181,8 +184,7 @@ export default {
           for (let i = 0; i<Da.length; i++){
             this.Messages.push({Name: Da[i]["user"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(8, 2)+"."+Da[i]["date"].substr(5, 2)+"."+Da[i]["date"].substr(0, 2)+" "+Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
           }
-          this.Messages.sort((prev, next) => prev.LastDate - next.LastDate)
-          console.log(this.Messages)
+          this.Messages.sort((prev, next) => next.LastDate - prev.LastDate)
         }
       })
     },
@@ -198,8 +200,6 @@ export default {
     this.Username = sessionStorage.getItem('Username')
     this.ChoiceName = sessionStorage.getItem('ChoiceName')
     this.IdRoomChoice = sessionStorage.getItem('IdRoomChoice')
-    console.log(sessionStorage.getItem('ChoiceName'))
-    console.log(sessionStorage.getItem('IdRoomChoice'))
     if (this.ChoiceName!==""){
       this.Update_Message()
       this.visible = false
@@ -299,77 +299,9 @@ nav{
   background-repeat: no-repeat;
 }
 
-/*Контейнер списка пользователей*/
-.user_array{
-  padding-left: 1rem;
-  min-height: 90%;
-}
-
-/*Список пользователей*/
-.user_ul{
-  height: 90vh;
-  overflow: auto;
-  overflow-x: hidden;
-  margin: 0rem;
-  padding-left: .5rem;
-}
-
-/*Элемент списка*/
-.user_li{
-  margin-right: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  height: 4rem;
-  padding-left: .3rem;
-  border-radius: 15px;
-  transition-duration: .25s;
-
-}
-.user_li:hover{
-  background-color: rgb(235, 235, 235);
-  border-radius: 15px;
-}
-
-/*Содержимое элемента*/
-.group_user_date{
-  max-width: calc(100% - 3.6rem);
-  display: flex;
-  justify-content: space-between;
-  margin-top: 0rem;
-  margin-bottom: 1rem;
-}
-.avatar_image{
-  margin-right: 1rem;
-  min-width: 2.5rem;
-  min-height: 2.5rem;
-}
-.username{
-  display: flex;
-  flex-wrap: wrap;
-  max-width: 100%;
-  max-height: 3rem;
-}
-.username_info{
-  display: flex;
-  width: 30rem;
-  font-weight: bold;
-}
-.last_messege_date{
-  display: flex;
-}
-.draft{
-  margin-top: 0;
-}
-
 ::-webkit-scrollbar {
   width: 0;
   height: 0;
-}
-
-.user_ul{
-  scrollbar-width: thin;
-  scrollbar-color: grey;
 }
 
 /*Правая часть с чатом и инфой*/
@@ -391,12 +323,13 @@ nav{
   padding-top: .2rem;
   padding-left: 2rem;
   border-left: 1px solid grey;
-  box-shadow: 0px 1px 5px -1px rgba(0,0,0,.21);
+  box-shadow: 0 1px 5px -1px rgba(0,0,0,.21);
 }
 .chat-panel{
   display: flex;
   justify-content: space-between;
-  flex: 1 1 auto;
+  width: 100%;
+  height: 3.5rem;
 }
 .user_info_text{
   flex: 1 1 auto;
@@ -434,7 +367,7 @@ nav{
   display: flex;
   align-items: center;
   flex-direction: column;
-  max-height: 90vh;
+  height: 90vh;
   width: 100%;
   justify-content: flex-end;
   z-index: 1000;
@@ -443,13 +376,14 @@ nav{
 /*Внешний контейнер чата*/
 .out-chat-window{
   display: flex;
+  min-width: 100%;
   align-items: center;
   justify-content: space-around;
 }
 /*Основной контейнер чата*/
 .chat-window{
   display: flex;
-  max-width: 60%;
+  min-width: 60%;
   height: calc(90vh - 5rem);
   padding-left: 1rem;
   padding-right: 1rem;
@@ -482,6 +416,10 @@ nav{
   padding: 1rem;
   max-width: 50%;
   flex-direction: column;
+}
+.Message-Text{
+  max-width: 15rem;
+  word-wrap: break-word;
 }
 .time-send-row{
   display: flex;

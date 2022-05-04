@@ -1,5 +1,4 @@
 <template>
-  <b-form @submit="login">
     <!--Основная карточка с содержимым всего поля входа-->
     <div class="form-div">
       <div class="card">
@@ -30,7 +29,6 @@
         </div>
       </div>
     </div>
-  </b-form>
 </template>
 
 
@@ -69,7 +67,6 @@ export default {
           password: this.Password
         },
         success: (response) => {
-          console.log(response)
           this.Token = response.auth_token
           sessionStorage.setItem("AuthToken", this.Token)
           sessionStorage.setItem("Username", this.Username)
@@ -78,7 +75,6 @@ export default {
 
         },
         error: (data) => {
-          console.log(this.Password)
           alert(data.responseJSON.non_field_errors[0])
         }
       })

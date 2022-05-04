@@ -1,6 +1,4 @@
 <template>
-  <b-form @submit="Register">
-
     <!--Основная карточка с блоками для регистрации-->
     <div class="form-div">
       <div class="card">
@@ -33,7 +31,6 @@
         </div>
       </div>
     </div>
-  </b-form>
 </template>
 
 
@@ -70,8 +67,7 @@ export default {
             username: this.Username,
             password: this.Password
           },
-          success: (response) => {
-            console.log(response)
+          success: () => {
             this.Login()
           },
           error: (data) => {
@@ -102,7 +98,6 @@ export default {
           password: this.Password
         },
         success: (response) => {
-          console.log(response)
           this.Token = response.auth_token
           this.$router.push('components/HomePage')
           sessionStorage.setItem("AuthToken", this.Token)
@@ -111,7 +106,6 @@ export default {
 
         },
         error: (data) => {
-          console.log(this.Password)
           alert(data.responseJSON.non_field_errors[0])
         }
       })
