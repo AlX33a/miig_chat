@@ -37,7 +37,7 @@ class APIDialogue(APIView):
                 else:
                     dialogue_serializer[index_odict]["message"] = mess[:14] + "..."
                 dialogue_serializer[index_odict]["date"] = chat_serializer[-1]["date"]
-                dialogue_serializer[index_odict]["message_sender"] = chat_serializer[-1].pop("user")["username"]
+                dialogue_serializer[index_odict]["message_sender"] = chat_serializer[-1]["user"]["username"]
             else:
                 dialogue_serializer[index_odict]["message"] = "Нажми, чтобы начать диалог!"
                 dialogue_serializer[index_odict]["date"] = date
