@@ -31,14 +31,13 @@ class APIDialogue(APIView):
             chat_serializer = ChatDialogueSerializers(chat, many=True).data
 
             if chat_serializer:
-                message_sender = chat_serializer[-1].pop("user")["username"]
                 mess = chat_serializer[-1]["message"]
                 if len(mess) < 14:
                     dialogue_serializer[index_odict]["message"] = mess
                 else:
                     dialogue_serializer[index_odict]["message"] = mess[:14] + "..."
                 dialogue_serializer[index_odict]["date"] = chat_serializer[-1]["date"]
-                dialogue_serializer[index_odict]["message_sender"] = message_sender
+                dialogue_serializer[index_odict]["message_sender"] = chat_serializer[-1].pop("user")["username"]
             else:
                 dialogue_serializer[index_odict]["message"] = "Нажми, чтобы начать диалог!"
                 dialogue_serializer[index_odict]["date"] = date
