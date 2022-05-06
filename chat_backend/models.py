@@ -7,6 +7,7 @@ class Dialogue(models.Model):
     creator = models.ForeignKey(User, verbose_name="Создатель", related_name="creator", on_delete=models.CASCADE)
     invited = models.ForeignKey(User, verbose_name="Участники", related_name="invited", on_delete=models.CASCADE, null=True)
     date = models.DateTimeField("Дата создания", auto_now_add=True)
+    is_read = models.BooleanField("Прочитано", default=False)
 
     class Meta:
         verbose_name = "Диалог"

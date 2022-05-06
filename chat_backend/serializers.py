@@ -20,13 +20,7 @@ class DialogueSerializers(serializers.ModelSerializer):
     creator, invited = UserNameSerializers(), UserNameSerializers()
     class Meta:
         model = Dialogue
-        fields = ("id", "creator", "invited", "date")
-
-
-class ChatSerializers(serializers.ModelSerializer):
-    class Meta:
-        model = ChatToDialogue
-        fields = ("message", "date")
+        fields = ("id", "creator", "invited", "is_read", "date")
 
 
 # Для APIChatDialogue

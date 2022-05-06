@@ -3,7 +3,7 @@ from .models import Dialogue, ChatToDialogue  # , Discussion, ChatToDiscussion
 
 
 class DialogueAdmin(admin.ModelAdmin):
-    list_display = ("creator", "invited", "date")
+    list_display = ("creator", "invited", "is_read", "date")
 
 
 class ChatToDialogueAdmin(admin.ModelAdmin):
