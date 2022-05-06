@@ -5,8 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Dialogue, ChatToDialogue
-from .serializers import (DialogueSerializers, UserSerializers, ChatDialogueSerializers,
-                          ChatPostSerializers)
+from .serializers import (DialogueSerializers, UserSerializers, ChatDialogueSerializers, ChatPostSerializers)
 
 
 class APIDialogue(APIView):
@@ -30,9 +29,9 @@ class APIDialogue(APIView):
 
             chat = ChatToDialogue.objects.filter(dialogue=dialogue_serializer[index_odict]["id"])
             chat_serializer = ChatDialogueSerializers(chat, many=True).data
-            message_sender = chat_serializer[-1].pop("user")["username"]
 
             if chat_serializer:
+                message_sender = chat_serializer[-1].pop("user")["username"]
                 mess = chat_serializer[-1]["message"]
                 if len(mess) < 14:
                     dialogue_serializer[index_odict]["message"] = mess
@@ -80,6 +79,7 @@ class APIChatDialogue(APIView):
 
         dialogues = Dialogue.objects.filter(id=dialogue_id)
         dialogue_serializer = DialogueSerializers(dialogues, many=True).data
+
         if not (str(request.user) in dialogue_serializer[0]["creator"]['username'] or
                 str(request.user) in dialogue_serializer[0]["invited"]['username']):
             return Response({"data": "Вы не состоите в диалоге."}, status=400)
@@ -102,7 +102,7 @@ class APIChatDialogue(APIView):
             dialogue_serializer = DialogueSerializers(dialogues, many=True).data
 
             if str(request.user) in dialogue_serializer[0]["creator"]['username'] or \
-                    str(request.user) in dialogue_serializer[0]["invited"]['username']:
+               str(request.user) in dialogue_serializer[0]["invited"]['username']:
                 chat.save(user=request.user)
                 return Response(status=201)
             return Response({"data": "Вы не состоите в диалоге."}, status=400)
