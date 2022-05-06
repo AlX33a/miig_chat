@@ -182,7 +182,7 @@ export default {
           const Da = response.data
           this.Messages = []
           for (let i = 0; i<Da.length; i++){
-            this.Messages.push({Name: Da[i]["user"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(8, 2)+"."+Da[i]["date"].substr(5, 2)+"."+Da[i]["date"].substr(0, 2)+" "+Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
+            this.Messages.push({Name: Da[i]["user"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(8, 2)+"."+Da[i]["date"].substr(5, 2)+"."+Da[i]["date"].substr(2, 2)+" "+Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
           }
           this.Messages.sort((prev, next) => next.LastDate - prev.LastDate)
         }
