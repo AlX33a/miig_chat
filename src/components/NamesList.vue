@@ -45,6 +45,7 @@ export default {
     };
   },
   methods: {
+    //когда человек нажимает на одну из комнат - делается выбор или наоборот комната пропадает (если клиент уже в ней был)
     Choice(NameChoice, IdRoomChoice){
       if (sessionStorage.getItem('ChoiceName')!==NameChoice) {
         sessionStorage.setItem("ChoiceName", NameChoice)

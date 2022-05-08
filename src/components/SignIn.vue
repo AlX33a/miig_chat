@@ -56,9 +56,9 @@ export default {
     };
   },
   methods: {
-    Login() {
-      //логика авторицации
 
+    //авторизация
+    Login() {
       $.ajax({
         url: "http://127.0.0.1:8000/auth/token/login/",
         type: "POST",
@@ -79,14 +79,19 @@ export default {
         }
       })
     },
+
+    //реактивное заполнение переменной из поля ввода
     Input_Username(event) {
       this.Username = event.target.value;
     },
+
+    //реактивное заполнение переменной из поля ввода
     Input_Password(event) {
       this.Password = event.target.value;
     },
   },
 
+  //Во время перехода отчищаются сессионные переменные
   mounted() {
 
     sessionStorage.setItem('AuthToken', "")

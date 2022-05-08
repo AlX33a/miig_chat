@@ -89,7 +89,7 @@ export default {
 
 
   methods: {
-
+    //синхронная функция, которая обновляет сообщения и комнаты
     ready() {
       window.setInterval(() => {
             if (this.Token) {
@@ -102,15 +102,20 @@ export default {
       },5000);
     },
 
+
+    //Когда поле ввода заполняется - переменная получает значение мгновенно
     Input_Username(event) {
       this.SearchUsers = event.target.value;
     },
 
+
+    //Когда поле ввода заполняется - переменная получает значение мгновенно
     Input_Message(event){
       this.Message = event.target.value;
     },
 
 
+    //отправка одним пользователем сообщения
     New_Message(){
       if (this.Message.length>499){
         alert("Длина сообщения не может превышать 499 символов. Ваше сообщение - " + this.Message.length)
@@ -134,6 +139,8 @@ export default {
       }
     },
 
+
+    //Обновление левого меню с комнатами
     Update_Rooms(){
       $.ajax({
         url: "http://127.0.0.1:8000/api/v1/room/",
@@ -150,6 +157,8 @@ export default {
       })
     },
 
+
+    //Поиск пользователя
     Search_User(){
       $.ajax({
         url: "http://127.0.0.1:8000/api/v1/room/",
@@ -170,6 +179,8 @@ export default {
       })
     },
 
+
+    //Обномление сообщений одной комнаты
     Update_Message(){
       $.ajax({
         url: "http://127.0.0.1:8000/api/v1/chat/",
@@ -189,11 +200,15 @@ export default {
       })
     },
 
+
+    //Если сюда обращается какой-либо метод - клиента выкидывает на страницу входа
     Go_Sign_In(){
       this.$router.push('components/SignIn')
     }
   },
 
+
+  //Данный метод запускается при загрузке или перезагрузке страницы, запускает необходимые проверки
   mounted(){
 
     this.Token = sessionStorage.getItem('AuthToken')

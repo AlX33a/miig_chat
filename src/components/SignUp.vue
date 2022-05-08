@@ -55,8 +55,9 @@ export default {
     };
   },
   methods: {
+
+    //логика регистрации
     Register() {
-      //логика регистрации
       if (this.Username.length>12){
         alert("Логин не должен быть длинее 12 символов!")
       }else {
@@ -81,14 +82,18 @@ export default {
         })
       }
     },
+
+    //реактивное заполнение переменной из поля ввода
     Input_Username(event) {
       this.Username = event.target.value;
     },
+
+    //реактивное заполнение переменной из поля ввода
     Input_Password(event) {
       this.Password = event.target.value;
     },
 
-
+    //авторизация - запускается сразу после регистрации чтобы пользователю не пришлось заново все ввобить на странице авторизации
     Login() {
       $.ajax({
         url: "http://127.0.0.1:8000/auth/token/login/",
@@ -112,6 +117,7 @@ export default {
     }
   },
 
+  //при загрузке страницы память в сессии отчищается
   mounted() {
 
     sessionStorage.setItem('AuthToken', "")
