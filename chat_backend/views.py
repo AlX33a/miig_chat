@@ -5,7 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Dialogue, ChatToDialogue
-from .serializers import (DialogueSerializers, UserSerializers, ChatDialogueSerializers, ChatPostSerializers)
+from .serializers import (DialogueSerializers, UserSerializers, ChatDialogueSerializers, ChatPostSerializers,
+                          UserNameSerializers)
 
 
 class APIDialogue(APIView):
@@ -83,7 +84,8 @@ class APIChatDialogue(APIView):
                 str(request.user) in dialogue_serializer[0]["invited"]['username']):
             return Response({"data": "Вы не состоите в диалоге."}, status=400)
 
-        if str(request.user) != chat_dialogue_serializer[-1]["user"]["username"]:
+        if str(request.user) != chat_dialogue_serializer[-1]["user"]["username"] and bool(
+                dialogues[0].is_read) is False:
             dialogues[0].is_read = True
             dialogues[0].save()
 
@@ -103,6 +105,23 @@ class APIChatDialogue(APIView):
             if str(request.user) in dialogue_serializer[0]["creator"]['username'] or \
                str(request.user) in dialogue_serializer[0]["invited"]['username']:
                 chat.save(user=request.user)
+
+                if bool(dialogues[0].is_read) is True:
+                    dialogues[0].is_read = False
+                    dialogues[0].save()
+
                 return Response(status=201)
             return Response({"data": "Вы не состоите в диалоге."}, status=400)
         return Response({"data": "Длина сообщения не может превышать 500 символов."}, status=400)
+
+class APIUserSearch(APIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+
+    @staticmethod
+    def get(request):
+        search = User.objects.filter(username__icontains=request.GET.get("user"))
+        if search:
+            if len(search) > 5:
+                return Response({"data": UserNameSerializers(search[:5], many=True).data}, status=201)
+            return Response({"data": UserNameSerializers(search, many=True).data}, status=201)
+        return Response({"data": [{"username": "Пользователь не найден."}]}, status=201)
