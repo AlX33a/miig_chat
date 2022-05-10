@@ -5,8 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Dialogue, ChatToDialogue
-from .serializers import (DialogueSerializers, UserSerializers, ChatDialogueSerializers, ChatPostSerializers,
-                          UserNameSerializers)
+from .serializers import (DialogueSerializers, ChatDialogueSerializers, ChatPostSerializers, UserNameSerializers)
 
 
 class APIDialogue(APIView):
@@ -49,15 +48,13 @@ class APIDialogue(APIView):
     @staticmethod
     def post(request):
         user = request.data.get("user")
+
         if str(request.user) == user:
             return Response({"data": "Самому себе написать нельзя."}, status=400)
 
         invited_user = User.objects.filter(username=user)
-        invited_user_serializer = UserSerializers(invited_user, many=True).data
-
-        if invited_user_serializer:
-            if not (Dialogue.objects.filter(Q(creator=request.user) & Q(invited=invited_user_serializer[0]["id"])) or
-                    Dialogue.objects.filter(Q(creator=invited_user_serializer[0]["id"]) & Q(invited=request.user))):
+        if invited_user:
+            if not Dialogue.objects.filter(Q(creator=request.user) & Q(invited=invited_user[0]) | Q(creator=invited_user[0]) & Q(invited=request.user)):
                 Dialogue.objects.create(creator=request.user, invited=invited_user[0]).save()
 
                 return Response(status=201)
@@ -77,33 +74,28 @@ class APIChatDialogue(APIView):
         chat_dialogue = ChatToDialogue.objects.filter(dialogue=dialogue_id)
         chat_dialogue_serializer = ChatDialogueSerializers(chat_dialogue, many=True).data
 
-        dialogues = Dialogue.objects.filter(id=dialogue_id)
-        dialogue_serializer = DialogueSerializers(dialogues, many=True).data
+        dialogues = Dialogue.objects.filter(Q(creator=request.user) & Q(id=dialogue_id) | Q(invited=request.user) & Q(id=dialogue_id))
 
-        if not (str(request.user) in dialogue_serializer[0]["creator"]['username'] or
-                str(request.user) in dialogue_serializer[0]["invited"]['username']):
-            return Response({"data": "Вы не состоите в диалоге."}, status=400)
+        if dialogues:
+            if str(request.user) != chat_dialogue_serializer[-1]["user"]["username"] and bool(dialogues[0].is_read) is False:
+                dialogues[0].is_read = True
+                dialogues[0].save()
 
-        if str(request.user) != chat_dialogue_serializer[-1]["user"]["username"] and bool(
-                dialogues[0].is_read) is False:
-            dialogues[0].is_read = True
-            dialogues[0].save()
+            for index_odict in range(len(chat_dialogue_serializer)):
+                chat_dialogue_serializer[index_odict]["user"] = chat_dialogue_serializer[index_odict]["user"]["username"]
 
-        for index_odict in range(len(chat_dialogue_serializer)):
-            chat_dialogue_serializer[index_odict]["user"] = chat_dialogue_serializer[index_odict]["user"]["username"]
-
-        return Response({"data": chat_dialogue_serializer})
+            return Response({"data": chat_dialogue_serializer})
+        return Response({"data": "Вы не состоите в диалоге."}, status=400)
 
     @staticmethod
     def post(request):
         chat = ChatPostSerializers(data=request.data)
+        dialogue_id = request.data.get("dialogue")
 
         if chat.is_valid():
-            dialogues = Dialogue.objects.filter(id=request.data.get("dialogue"))
-            dialogue_serializer = DialogueSerializers(dialogues, many=True).data
+            dialogues = Dialogue.objects.filter(Q(creator=request.user) & Q(id=dialogue_id) | Q(invited=request.user) & Q(id=dialogue_id))
 
-            if str(request.user) in dialogue_serializer[0]["creator"]['username'] or \
-               str(request.user) in dialogue_serializer[0]["invited"]['username']:
+            if dialogues:
                 chat.save(user=request.user)
 
                 if bool(dialogues[0].is_read) is True:

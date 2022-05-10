@@ -3,15 +3,15 @@ from .models import Dialogue, ChatToDialogue  # , Discussion, ChatToDiscussion
 
 
 class DialogueAdmin(admin.ModelAdmin):
-    list_display = ("creator", "invited", "is_read", "date")
+    list_display = ("id", "creator", "invited", "is_read", "date")
 
 
 class ChatToDialogueAdmin(admin.ModelAdmin):
-    list_display = ("dialogue", "user", "message", "date")
+    list_display = ("id", "dialogue", "user", "message", "date")
 
 
 class DiscussionAdmin(admin.ModelAdmin):
-    list_display = ("creator", "users_invited", "date")
+    list_display = ("id", "creator", "users_invited", "date")
 
     @staticmethod
     def users_invited(obj):
@@ -19,7 +19,7 @@ class DiscussionAdmin(admin.ModelAdmin):
 
 
 class ChatToDiscussionAdmin(admin.ModelAdmin):
-    list_display = ("dialogue", "user", "message", "date")
+    list_display = ("id", "dialogue", "user", "message", "date")
 
 
 admin.site.register(Dialogue, DialogueAdmin)
