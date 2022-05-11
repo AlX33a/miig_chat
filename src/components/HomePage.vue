@@ -150,7 +150,7 @@ export default {
           const Da = response.data
           this.Rooms = []
           for (let i = 0; i<Da.length; i++){
-            this.Rooms.push({IdRoom: Da[i]["id"], NameUser: Da[i]["invited"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
+            this.Rooms.push({IdRoom: Da[i]["id"], NameUser: Da[i]["invited"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2), IsRead: Da[i][["is_read"]], User: Da[i]["message_sender"]})
           }
           this.Rooms.sort((prev, next) => next.LastDate - prev.LastDate)
         }
@@ -204,6 +204,7 @@ export default {
     //Если сюда обращается какой-либо метод - клиента выкидывает на страницу входа
     Go_Sign_In(){
       this.$router.push('components/SignIn')
+      this.$router.go()
     }
   },
 
@@ -219,7 +220,7 @@ export default {
       this.Update_Message()
       this.visible = false
     }
-    if (!this.Token){
+    if (!this.Token || this.Token===''){
       this.$router.push('components/SignIn')
     }
     this.Update_Rooms()

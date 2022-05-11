@@ -58,8 +58,11 @@ export default {
 
     //логика регистрации
     Register() {
-      if (this.Username.length>12){
+      if (this.Username.length>12) {
         alert("Логин не должен быть длинее 12 символов!")
+
+      }else if (this.Username.length<4){
+        alert("Логин не должен быть короче 4 символов!")
       }else {
         $.ajax({
           url: "http://127.0.0.1:8000/auth/users/",
