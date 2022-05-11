@@ -111,7 +111,7 @@ class APIUserSearch(APIView):
 
     @staticmethod
     def get(request):
-        search = User.objects.filter(username__icontains=request.GET.get("user"))
+        search = User.objects.filter(username__icontains=request.GET.get("user")).exclude(username=request.user)
         if search:
             if len(search) > 5:
                 return Response({"data": UserNameSerializers(search[:5], many=True).data}, status=201)
