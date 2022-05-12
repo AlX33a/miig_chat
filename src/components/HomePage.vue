@@ -6,7 +6,7 @@
 
       <nav>
         <button class="menu"></button>
-        <input v-on:value="this.SearchUsers" @input="Input_Username" @keyup.enter="Search_User" class="user_search" type="text" placeholder="Search">
+        <input v-model="SearchUsers" @input="Input_Username" @keyup.enter="Search_User" class="user_search" type="text" placeholder="Search">
       </nav>
       <NamesList v-bind:Rooms="Rooms"/>
     </div>
@@ -48,7 +48,7 @@
           </div>
         </div>
         <div class="chat-input">
-          <input v-on:value="this.Message" @input="Input_Message" @keyup.enter="New_Message" class="input" type="text" placeholder="Напишите что нибудь" >
+          <input v-model="Message" @input="Input_Message" @keyup.enter="New_Message" class="input" type="text" placeholder="Напишите что нибудь" >
         </div>
       </div>
     </div>
@@ -143,7 +143,13 @@ export default {
           },
           success: () => {
             this.Message = ""
-            this.$router.go()
+            if (this.Token) {
+              this.Update_Rooms();
+              if (this.ChoiceName !== "") {
+                this.Update_Message()
+                this.visible = false
+              }
+            }
           },
           error: (data) => {
             alert(data.responseJSON.data)
@@ -182,7 +188,13 @@ export default {
         },
         success: () => {
           this.SearchUsers = ""
-          this.$router.go()
+          if (this.Token) {
+            this.Update_Rooms();
+            if (this.ChoiceName !== "") {
+              this.Update_Message()
+              this.visible = false
+            }
+          }
         },
         error: (data) => {
           alert(data.responseJSON.data)
