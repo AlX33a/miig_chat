@@ -39,7 +39,7 @@ class APIDialogue(APIView):
                 dialogue_serializer[index_odict]["date"] = chat_serializer[-1]["date"]
                 dialogue_serializer[index_odict]["message_sender"] = chat_serializer[-1]["user"]["username"]
             else:
-                dialogue_serializer[index_odict]["message"] = "Нажми, чтобы начать диалог!"
+                dialogue_serializer[index_odict]["message"] = "Начните диалог!"
                 dialogue_serializer[index_odict]["date"] = date
                 dialogue_serializer[index_odict]["message_sender"] = ""
 
@@ -118,9 +118,25 @@ class APIUserSearch(APIView):
 
     @staticmethod
     def get(request):
+        scroll_number = int(request.GET.get("scroll"))
+
         search = User.objects.filter(username__icontains=request.GET.get("user")).exclude(username=request.user)
+        search_serializers = UserNameSerializers(search, many=True).data
+
         if search:
-            if len(search) > 5:
-                return Response({"data": UserNameSerializers(search[:5], many=True).data}, status=201)
-            return Response({"data": UserNameSerializers(search, many=True).data}, status=201)
+            if len(search) < 6:
+                return Response({"data": search_serializers}, status=201)
+
+            scrolling_options = []
+            five_options = []
+            for odict in search_serializers:
+                five_options += [odict]
+                if len(five_options) == 5:
+                    scrolling_options += [five_options]
+                    five_options = []
+            scrolling_options += [five_options]
+
+            if scroll_number == 1:
+                return Response({"quantity": len(scrolling_options), "data": scrolling_options[scroll_number - 1]}, status=201)
+            return Response({"data": scrolling_options[scroll_number - 1]}, status=201)
         return Response({"data": [{"username": "Пользователь не найден."}]}, status=201)
