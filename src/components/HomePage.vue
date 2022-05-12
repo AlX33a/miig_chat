@@ -106,6 +106,19 @@ export default {
     //Когда поле ввода заполняется - переменная получает значение мгновенно
     Input_Username(event) {
       this.SearchUsers = event.target.value;
+      if (this.SearchUsers.length>3 && this.SearchUsers.length<13){
+          $.ajax({
+            url: "http://127.0.0.1:8000/api/v1/search/",
+            type: "GET",
+            headers: {'Authorization': "Token " + sessionStorage.getItem('AuthToken')},
+            data: {
+              user: this.SearchUsers,
+            },
+            success: (data) => {
+              console.log(data)
+            },
+          })
+      }
     },
 
 
