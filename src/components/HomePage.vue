@@ -35,12 +35,21 @@
                   </p>
                 </div>
               </section>
+              <section class="chat-row host" v-else-if="!Message.IsRead">
+                <div class="guest-messege">
+                  <span class="Message-Text">{{Message.Text}}</span>
+                  <p class="time-send-row">
+                    <span class="time-send">{{Message.Time}}</span>
+                    <img class="marker unread" src="../img/Logo_NIKE.svg" alt="#">
+                  </p>
+                </div>
+              </section>
               <section class="chat-row host" v-else>
                 <div class="guest-messege">
                   <span class="Message-Text">{{Message.Text}}</span>
                   <p class="time-send-row">
-                    <span></span>
                     <span class="time-send">{{Message.Time}}</span>
+                    <img class="marker read" src="../img/Logo_NIKE_green.svg" alt="#">
                   </p>
                 </div>
               </section>
@@ -168,10 +177,12 @@ export default {
         success: (response) => {
           const Da = response.data
           this.Rooms = []
+          console.log(Da)
           for (let i = 0; i<Da.length; i++){
             this.Rooms.push({IdRoom: Da[i]["id"], NameUser: Da[i]["invited"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2), IsRead: Da[i][["is_read"]], User: Da[i]["message_sender"]})
           }
           this.Rooms.sort((prev, next) => next.LastDate - prev.LastDate)
+          console.log(this.Rooms)
         }
       })
     },
@@ -218,7 +229,7 @@ export default {
           const Da = response.data
           this.Messages = []
           for (let i = 0; i<Da.length; i++){
-            this.Messages.push({Name: Da[i]["user"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(8, 2)+"."+Da[i]["date"].substr(5, 2)+"."+Da[i]["date"].substr(2, 2)+" "+Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2)})
+            this.Messages.push({Name: Da[i]["user"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(8, 2)+"."+Da[i]["date"].substr(5, 2)+"."+Da[i]["date"].substr(2, 2)+" "+Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2), IsRead: Da[i]["is_read"]})
           }
           this.Messages.sort((prev, next) => next.LastDate - prev.LastDate)
         }
@@ -458,6 +469,9 @@ nav{
   max-width: 50%;
   flex-direction: column;
 }
+.guest-messege{
+  padding-bottom: .5rem;
+}
 .Message-Text{
   max-width: 15rem;
   word-wrap: break-word;
@@ -465,10 +479,26 @@ nav{
 .time-send-row{
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
-  opacity: 50%;
+  opacity: 100%;
   font-size: 13px;
+}
+.time-send{
+  opacity: 50%;
+}
+.marker{
+  padding-top: .5rem;
+  margin-left: .5rem;
+  height: 1.5rem;
+  width: 1.5rem;
+  padding-left: 0rem;
+}
+.read{
+  display: unset;
+}
+.unread{
+  display: unset;
 }
 /*Цвета сообщений*/
 .host-messege{

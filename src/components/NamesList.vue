@@ -4,7 +4,7 @@
     <div class="user_array">
       <ul class="user_ul">
         <div v-for="Room in Rooms" v-bind:key = "Room.IdRoom">
-          <li class="user_info" v-if="Room.User===UserName || Room.User===''">
+          <li class="user_info" v-if="Room.User===UserName && Room.IsRead">
             <div class="user_li" @click="Choice(Room.NameUser, Room.IdRoom)">
               <div class="avatar_image">
                 <img class="avatar_photo" src="../img/avatar.svg" alt="#">
@@ -15,13 +15,30 @@
                   <span class="last_messege_date">{{Room.Time}}</span>
                 </p>
                 <p class="draft">
-                  <span class="last-messege_info" v-if="Room.Text!=='Нажми, чтобы начать диалог!'">{{"Вы: "+Room.Text}}</span>
-                  <span class="last-messege_info" v-else>{{Room.Text}}</span>
+                  <span class="last-messege_info">{{"Вы: "+Room.Text}}</span>
+                  <img src="../img/Logo_NIKE_green.svg" alt="#" class="marker read">
                 </p>
               </div>
             </div>
           </li>
-          <li class="user_info" v-else-if="Room.IsRead">
+          <li class="user_info" v-else-if="Room.User===UserName && !Room.IsRead">
+            <div class="user_li" @click="Choice(Room.NameUser, Room.IdRoom)">
+              <div class="avatar_image">
+                <img class="avatar_photo" src="../img/avatar.svg" alt="#">
+              </div>
+              <div class="username">
+                <p class="group_user_date">
+                  <span class="username_info" >{{Room.NameUser}}</span>
+                  <span class="last_messege_date">{{Room.Time}}</span>
+                </p>
+                <p class="draft">
+                  <span class="last-messege_info">{{"Вы: "+Room.Text}}</span>
+                  <img src="../img/Logo_NIKE.svg" alt="#" class="marker unread">
+                </p>
+              </div>
+            </div>
+          </li>
+          <li class="user_info" v-else-if="Room.User==='' || Room.IsRead">
             <div class="user_li" @click="Choice(Room.NameUser, Room.IdRoom)">
               <div class="avatar_image">
                 <img class="avatar_photo" src="../img/avatar.svg" alt="#">
@@ -33,13 +50,12 @@
                 </p>
                 <p class="draft">
                   <span class="last-messege_info">{{Room.Text}}</span>
-                  <img src="../img/read-marker.svg" alt="#" class="marker read">
                 </p>
               </div>
             </div>
           </li>
           <li class="user_info" v-else>
-            <div class="user_li" @click="Choice(Room.NameUser, Room.IdRoom)">
+            <div class="user_li_unread" @click="Choice(Room.NameUser, Room.IdRoom)">
               <div class="avatar_image">
                 <img class="avatar_photo" src="../img/avatar.svg" alt="#">
               </div>
@@ -50,7 +66,6 @@
                 </p>
                 <p class="draft">
                   <span class="last-messege_info">{{Room.Text}}</span>
-                  <img src="../img/unread-marker.svg" alt="#" class="marker unread">
                 </p>
               </div>
             </div>
@@ -208,7 +223,18 @@ nav{
   padding-left: .3rem;
   border-radius: 15px;
   transition-duration: .25s;
-
+}
+.user_li_unread{
+  margin-right: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  height: 4rem;
+  padding-left: .3rem;
+  border-radius: 15px;
+  transition-duration: .25s;
+  background-color:rgb(244, 244, 244);
+  border-radius: 15px;
 }
 .user_li:hover{
   background-color: rgb(235, 235, 235);
