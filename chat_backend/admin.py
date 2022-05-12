@@ -7,7 +7,7 @@ class DialogueAdmin(admin.ModelAdmin):
 
 
 class ChatToDialogueAdmin(admin.ModelAdmin):
-    list_display = ("id", "dialogue", "user", "message", "date")
+    list_display = ("id", "dialogue", "user", "message", "is_read", "date")
 
 
 class DiscussionAdmin(admin.ModelAdmin):

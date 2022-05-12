@@ -20,6 +20,7 @@ class ChatToDialogue(models.Model):
     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.CASCADE)
     message = models.TextField("Сообщение", max_length=500)
     date = models.DateTimeField("Дата отправки", auto_now_add=True)
+    is_read = models.BooleanField("Прочитано", default=False)
 
     class Meta:
         verbose_name = "Сообщение диалога"

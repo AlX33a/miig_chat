@@ -28,7 +28,7 @@ class ChatDialogueSerializers(serializers.ModelSerializer):
     user = UserNameSerializers()
     class Meta:
         model = ChatToDialogue
-        fields = ("user", "message", "date")
+        fields = ("user", "message", "is_read", "date")
 
 
 class ChatPostSerializers(serializers.ModelSerializer):

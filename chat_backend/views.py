@@ -76,6 +76,13 @@ class APIChatDialogue(APIView):
 
         dialogues = Dialogue.objects.filter(Q(creator=request.user) & Q(id=dialogue_id) | Q(invited=request.user) & Q(id=dialogue_id))
 
+        if chat_dialogue:
+            if str(request.user) != chat_dialogue_serializer[-1]["user"]["username"] and bool(chat_dialogue[len(chat_dialogue) - 1].is_read) is False:
+                for i in range(len(chat_dialogue)):
+                    if bool(chat_dialogue[i].is_read) is False:
+                        chat_dialogue[i].is_read = True
+                        chat_dialogue[i].save()
+
         if dialogues:
             if str(request.user) != chat_dialogue_serializer[-1]["user"]["username"] and bool(dialogues[0].is_read) is False:
                 dialogues[0].is_read = True
