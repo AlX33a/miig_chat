@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Dialogue, ChatToDialogue  # , Discussion, ChatToDiscussion
+from .models import Dialogue, ChatToDialogue, TrackingUser  # , Discussion, ChatToDiscussion
 
 
 class DialogueAdmin(admin.ModelAdmin):
@@ -8,6 +8,10 @@ class DialogueAdmin(admin.ModelAdmin):
 
 class ChatToDialogueAdmin(admin.ModelAdmin):
     list_display = ("id", "dialogue", "user", "message", "is_read", "date")
+
+
+class TrackingUserAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "date")
 
 
 class DiscussionAdmin(admin.ModelAdmin):
@@ -24,6 +28,7 @@ class ChatToDiscussionAdmin(admin.ModelAdmin):
 
 admin.site.register(Dialogue, DialogueAdmin)
 admin.site.register(ChatToDialogue, ChatToDialogueAdmin)
+admin.site.register(TrackingUser, TrackingUserAdmin)
 
 # admin.site.register(Discussion, DiscussionAdmin)
 # admin.site.register(ChatToDiscussion, ChatToDiscussionAdmin)

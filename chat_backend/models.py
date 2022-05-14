@@ -26,6 +26,13 @@ class ChatToDialogue(models.Model):
         verbose_name = "Сообщение диалога"
         verbose_name_plural = "Сообщения диалогов"
 
+class TrackingUser(models.Model):
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.CASCADE)
+    date = models.DateTimeField("Дата отправки запроса", auto_now=True)
+
+    class Meta:
+        verbose_name = "Последняя активность"
+        verbose_name_plural = "Последняя активность"
 
 class Discussion(models.Model):
     # Модель беседы
