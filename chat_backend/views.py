@@ -168,19 +168,3 @@ class APIUserSearch(APIView):
                 return Response({"quantity": len(scrolling_options), "data": scrolling_options[scroll_number - 1]}, status=201)
             return Response({"data": scrolling_options[scroll_number - 1]}, status=201)
         return Response({"data": [{"username": "Пользователь не найден."}]}, status=201)
-
-class APIUserOnline(APIView):
-    permission_classes = [permissions.IsAuthenticated, ]
-
-    @staticmethod
-    def get(request):
-        user = User.objects.filter(username=request.GET.get("user"))
-
-        if user:
-            date = TrackingUser.objects.filter(user=user[0])[0].date
-            difference = datetime.now(timezone.utc) - date
-            support = datetime.now().replace(hour=0, minute=0, second=10, microsecond=0) - datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-            if difference < support:
-                return Response({"data": [{"is_online": difference < support, "date": date}]}, status=201)
-            return Response({"data": [{"is_online": difference < support, "date": date}]}, status=201)
-        return Response({"data": [{"username": "Пользователь не найден."}]}, status=201)
