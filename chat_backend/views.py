@@ -91,10 +91,8 @@ class APIChatDialogue(APIView):
         tracking_user(request)
 
         user = User.objects.filter(username=APIDialogue.get(request).data["data"][0]["invited"])
-        print(user[0])
 
         date = TrackingUser.objects.filter(user=user[0])[0].date
-        print(TrackingUser.objects.filter(user=user[0])[0].date)
         difference = datetime.now(timezone.utc) - date
         support = timedelta(seconds=10)
         if difference < support:
