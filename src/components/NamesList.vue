@@ -200,8 +200,11 @@ nav{
 
 /*Контейнер списка пользователей*/
 .user_array{
+  padding-top: .2rem;
+  z-index: 1;
   padding-left: 1rem;
   min-height: 90%;
+  position: relative;
 }
 
 /*Список пользователей*/

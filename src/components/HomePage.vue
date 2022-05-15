@@ -5,9 +5,41 @@
     <div class="container">
 
       <nav>
-        <button class="menu"></button>
+        <img class="menu" src="../img/leaf.jpg">
         <input v-model="SearchUsers" @input="Input_Username" @keyup.enter="Search_User" class="user_search" type="text" placeholder="Search">
       </nav>
+      <!--
+      <div id="search" class="search_list">
+        <div class="found-users-array">
+          <ul class="found-users-ul">
+            <li>
+              <div class="found-user">
+                Username
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="page-manager">
+          <button class="left-arrow-btn left-green"></button>
+          <span class="page-counter">1/2</span>
+          <button class="right-arrow-btn right-green"></button>
+        </div>
+        <div class="page-manager">
+          <button class="left-arrow-btn left-grey"></button>
+          <span class="page-counter">1/2</span>
+          <button class="right-arrow-btn right-green"></button>
+        </div>
+        <div class="page-manager">
+          <button class="left-arrow-btn left-green"></button>
+          <span class="page-counter">1/2</span>
+          <button class="right-arrow-btn right-grey"></button>
+        </div>
+      </div>
+      -->
+
+
+
+
       <NamesList v-bind:Rooms="Rooms"/>
     </div>
     <div class="chat-page">
@@ -16,6 +48,14 @@
         <div class="chat-panel">
           <div class="user_info_text">
             <p class="chat-username">{{ChoiceName}}</p>
+            <p class="offline-p" v-if="!Online" v-show="!visible">
+              <img class="online-icon" src="../img/zzz-icon.svg" alt="#">
+              <span class="status offline">был в сети {{OnlineDate}}</span>
+            </p>
+            <p class="online-p" v-else v-show="!visible">
+              <img class="online-icon" src="../img/green-circle.svg" alt="#">
+              <span class="status online" >Online</span>
+            </p>
           </div>
           <div class="nav-btn">
             <button class="logout-button" @click="Go_Sign_In"></button>
@@ -93,6 +133,8 @@ export default {
       IdRoomChoice: "",
       visible: true,
       Message: "",
+      Online: "",
+      OnlineDate: ""
     };
   },
 
@@ -111,21 +153,22 @@ export default {
       },5000);
     },
 
-
+    //this.SearchUsers.length>3 &&
     //Когда поле ввода заполняется - переменная получает значение мгновенно
     Input_Username(event) {
       this.SearchUsers = event.target.value;
-      if (this.SearchUsers.length>3 && this.SearchUsers.length<13){
+      if (this.SearchUsers.length<13){
           $.ajax({
             url: "http://127.0.0.1:8000/api/v1/search/",
             type: "GET",
             headers: {'Authorization': "Token " + sessionStorage.getItem('AuthToken')},
             data: {
+              skroll: 1,
               user: this.SearchUsers,
             },
-            success: (data) => {
-              console.log(data)
-            },
+            success: (response) => {
+              console.log(response)
+            }
           })
       }
     },
@@ -177,12 +220,12 @@ export default {
         success: (response) => {
           const Da = response.data
           this.Rooms = []
-          console.log(Da)
+          //console.log(Da)
           for (let i = 0; i<Da.length; i++){
             this.Rooms.push({IdRoom: Da[i]["id"], NameUser: Da[i]["invited"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2), IsRead: Da[i][["is_read"]], User: Da[i]["message_sender"]})
           }
           this.Rooms.sort((prev, next) => next.LastDate - prev.LastDate)
-          console.log(this.Rooms)
+          //console.log(this.Rooms)
         }
       })
     },
@@ -227,7 +270,10 @@ export default {
         },
         success: (response) => {
           const Da = response.data
+          this.Online = response.online.is_online
+          this.OnlineDate = response.online.date
           this.Messages = []
+          //console.log(response)
           for (let i = 0; i<Da.length; i++){
             this.Messages.push({Name: Da[i]["user"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(8, 2)+"."+Da[i]["date"].substr(5, 2)+"."+Da[i]["date"].substr(2, 2)+" "+Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2), IsRead: Da[i]["is_read"]})
           }
@@ -239,8 +285,8 @@ export default {
 
     //Если сюда обращается какой-либо метод - клиента выкидывает на страницу входа
     Go_Sign_In(){
+      //this.$router.go()
       this.$router.push('components/SignIn')
-      this.$router.go()
     }
   },
 
@@ -257,6 +303,7 @@ export default {
       this.visible = false
     }
     if (!this.Token || this.Token===''){
+      //this.$router.go()
       this.$router.push('components/SignIn')
     }
     this.Update_Rooms()
@@ -298,12 +345,11 @@ p{
 .container{
   background-color: #fff;
   box-shadow: 0 0 1rem 0 rgba(0,0,0,.2);
-  height: inherit;
+  height: 100vh;
   width: 25%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-
 }
 /*Навигационная панель с менюшкой и поиском*/
 nav{
@@ -316,23 +362,83 @@ nav{
   padding-right: 1rem;
   font-size: 20px;
   max-width: 100%;
-  min-height: 3.5rem;
+  min-height: 3.7rem;
+}
+.search_list{
+  background-color: #fff;
+  box-shadow:  0 10px 7px -1px rgba(0,0,0,.21);
+  display: flex;
+  flex-direction: column;
+  width: 25%;
+  height: min-content;
+  border-top: 1px grey solid;
+  top: 3.7rem;
+  z-index: 4;
+  position: absolute;
+  border-radius: 0 0 15px 15px;
+}
+.found-users-array{
+  height: min-content;
+}
+.found-users-ul{
+  list-style-type: none;
+}
+.found-user{
+  width: 80%;
+  padding-left: 1rem;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px grey solid;
+}
+.page-manager{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 3rem;
+}
+.left-arrow-btn{
+  background-color: #fff;
+  height: 2.5rem;
+  width: 2.5rem;
+  background-size: calc(2rem);
+  background-position: 0;
+  background-repeat: no-repeat;
+  border-color: transparent;
+  border-radius: 25px;
+}
+.left-green{
+  background-image: url("../img/left-arrow-green.svg");
+}
+.left-grey{
+  background-image: url("../img/left-arrow-grey.svg");
+}
+.right-arrow-btn{
+  background-color: #fff;
+  height: 2.5rem;
+  width: 2.5rem;
+  background-size: calc(2rem);
+  background-position: 5px;
+  background-repeat: no-repeat;
+  border-color: transparent;
+  border-radius: 25px;
+}
+.right-green{
+  background-image: url("../img/right-arrow-green.svg");
+}
+.right-grey{
+  background-image: url("../img/right-arrow-grey.svg");
+}
+.page-counter{
+  margin-top: .5rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 /*Кнопка-меню*/
 .menu{
-  background-image: url("../img/menu-svgrepo-com.svg");
-  background-color: transparent;
-  background-repeat: no-repeat;
-  background-position: calc(1.5rem - 1.75rem / 2) calc(1.5rem - 1.75rem / 2);
-  background-size: 1.75rem;
-  border-radius: 25px;
-  min-height: 3rem;
-  min-width: 3rem;
-  border: transparent;
-  margin-right: .5rem;
-}
-.menu:hover{
-  background-color: rgb(240, 240, 240);
+  background-position: -1.1rem -1rem;
+  height: 4.5rem;
+  width: 4.5rem;
+  border-color: red;
 }
 /*Поиск пользователя из списка*/
 .user_search{
@@ -381,14 +487,29 @@ nav{
   display: flex;
   justify-content: space-between;
   width: 100%;
-  height: 3.5rem;
+  max-height: 3.5rem;
 }
 .user_info_text{
   flex: 1 1 auto;
   text-align: center;
 }
 .chat-username{
-  padding-top: 1rem;
+  padding-top: calc((3.5rem) / 2 - 1.25rem);
+}
+.online-icon{
+  height: .75rem;
+  width: .75rem;
+  padding-right: .2rem;
+}
+.status{
+  font-size: 14px;
+  color: rgb(92, 92, 232);
+}
+.offline{
+  color: black;
+}
+.offline-p{
+  opacity:50%;
 }
 .chat-avatar{
   max-width: 3rem;
