@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -91,14 +91,18 @@ class APIChatDialogue(APIView):
         tracking_user(request)
 
         user = User.objects.filter(username=APIDialogue.get(request).data["data"][0]["invited"])
+        print(user[0])
 
         date = TrackingUser.objects.filter(user=user[0])[0].date
+        print(TrackingUser.objects.filter(user=user[0])[0].date)
         difference = datetime.now(timezone.utc) - date
-        support = datetime.now().replace(hour=0, minute=0, second=10, microsecond=0) - datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        support = timedelta(seconds=10)
         if difference < support:
             is_online = {"is_online": difference < support, "date": ""}
+        elif str(date)[:10] == str(datetime.now(timezone.utc))[:10]:
+            is_online = {"is_online": difference < support, "date": f"Сегодня {str(date + timedelta(hours=3))[11:16]}"}
         else:
-            is_online = {"is_online": difference < support, "date": date}
+            is_online = {"is_online": difference < support, "date": str(date + timedelta(hours=3))[:16]}
 
         if chat_dialogue:
             if str(request.user) != chat_dialogue_serializer[-1]["user"]["username"] and bool(chat_dialogue[len(chat_dialogue) - 1].is_read) is False:
@@ -108,9 +112,10 @@ class APIChatDialogue(APIView):
                         chat_dialogue[i].save()
 
         if dialogues:
-            if str(request.user) != chat_dialogue_serializer[-1]["user"]["username"] and bool(dialogues[0].is_read) is False:
-                dialogues[0].is_read = True
-                dialogues[0].save()
+            if chat_dialogue_serializer:
+                if str(request.user) != chat_dialogue_serializer[-1]["user"]["username"] and bool(dialogues[0].is_read) is False:
+                    dialogues[0].is_read = True
+                    dialogues[0].save()
 
             for index_odict in range(len(chat_dialogue_serializer)):
                 chat_dialogue_serializer[index_odict]["user"] = chat_dialogue_serializer[index_odict]["user"]["username"]
@@ -144,7 +149,7 @@ class APIUserSearch(APIView):
 
     @staticmethod
     def get(request):
-        scroll_number = int(request.GET.get("scroll"))
+        scroll_number = request.GET.get("scroll")
 
         tracking_user(request)
 
