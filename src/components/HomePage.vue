@@ -507,6 +507,9 @@ nav{
 .left-green{
   background-image: url("../img/left-arrow-green.svg");
 }
+.left-green:hover{
+  background-image: url("../img/left-arrow-grey.svg");
+}
 .left-grey{
   background-image: url("../img/left-arrow-grey.svg");
 }
@@ -525,6 +528,9 @@ nav{
 }
 .right-grey{
   background-image: url("../img/right-arrow-grey.svg");
+}
+.right-green:hover{
+  background-image: url("../img/right-arrow-grey.svg")
 }
 .page-counter{
   margin-top: .5rem;
