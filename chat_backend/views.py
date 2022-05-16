@@ -87,10 +87,9 @@ class APIChatDialogue(APIView):
 
         dialogues = Dialogue.objects.filter(Q(creator=request.user) & Q(id=dialogue_id) | Q(invited=request.user) & Q(id=dialogue_id))
 
-        # invited_user = APIDialogue.get(request).data["data"][0]["invited"]
         tracking_user(request)
 
-        user = User.objects.filter(username=APIDialogue.get(request).data["data"][0]["invited"])
+        user = User.objects.filter(username=APIDialogue.get(request).data["data"][int(dialogue_id) - 1]["invited"])
 
         date = TrackingUser.objects.filter(user=user[0])[0].date
         difference = datetime.now(timezone.utc) - date
@@ -99,6 +98,8 @@ class APIChatDialogue(APIView):
             is_online = {"is_online": difference < support, "date": ""}
         elif str(date)[:10] == str(datetime.now(timezone.utc))[:10]:
             is_online = {"is_online": difference < support, "date": f"Сегодня {str(date + timedelta(hours=3))[11:16]}"}
+        elif str(date + timedelta(days=1))[:10] == str(datetime.now(timezone.utc))[:10]:
+            is_online = {"is_online": difference < support, "date": f"Вчера {str(date + timedelta(hours=3))[11:16]}"}
         else:
             is_online = {"is_online": difference < support, "date": str(date + timedelta(hours=3))[:16]}
 
@@ -147,7 +148,7 @@ class APIUserSearch(APIView):
 
     @staticmethod
     def get(request):
-        scroll_number = request.GET.get("scroll")
+        scroll_number = int(request.GET.get("scroll"))
 
         tracking_user(request)
 
@@ -155,9 +156,6 @@ class APIUserSearch(APIView):
         search_serializers = UserNameSerializers(search, many=True).data
 
         if search:
-            if len(search) < 6:
-                return Response({"data": search_serializers}, status=201)
-
             scrolling_options = []
             five_options = []
             for odict in search_serializers:
@@ -167,7 +165,5 @@ class APIUserSearch(APIView):
                     five_options = []
             scrolling_options += [five_options]
 
-            if scroll_number == 1:  # Можно убрать, если окажется, что при следующих запросах тоже понадобится quantity
-                return Response({"quantity": len(scrolling_options), "data": scrolling_options[scroll_number - 1]}, status=201)
-            return Response({"data": scrolling_options[scroll_number - 1]}, status=201)
-        return Response({"data": [{"username": "Пользователь не найден."}]}, status=201)
+            return Response({"quantity": len(scrolling_options), "data": scrolling_options[scroll_number - 1]}, status=201)
+        return Response({"quantity": 1, "data": [{"username": "Пользователь не найден."}]}, status=201)
