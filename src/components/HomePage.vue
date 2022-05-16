@@ -3,16 +3,11 @@
   <body>
   <div class="fullpage">
     <div class="container">
-
       <nav>
         <img class="menu" src="../img/leaf.jpg">
         <input v-model="SearchUsers" @input="Input_Username" @keyup.enter="Search_User" class="user_search" type="text" placeholder="Search">
       </nav>
-
-
-
       <div id="search" class="search_list">
-
         <div class="found-users-array">
           <ul class="found-users-ul" v-for="Name in SearchUsersList" v-bind:key = "Name.Name">
             <li>
@@ -22,8 +17,6 @@
             </li>
           </ul>
         </div>
-
-
         <div class="page-manager" v-if="Quantity!==1 && Scroll!==1 && Scroll!==Quantity">
           <button class="left-arrow-btn left-green" @click="ScrollMinus"></button>
           <span class="page-counter">{{Scroll}}/{{Quantity}}</span>
@@ -39,15 +32,7 @@
           <span class="page-counter">{{Scroll}}/{{Quantity}}</span>
           <button class="right-arrow-btn right-grey"></button>
         </div>
-
-
-
       </div>
-
-
-
-
-
       <NamesList v-bind:Rooms="Rooms"/>
     </div>
     <div class="chat-page">
@@ -117,8 +102,6 @@
 
 
 
-
-
 <script>
 import NamesList from '@/components/NamesList'
 import $ from "jquery";
@@ -132,20 +115,20 @@ export default {
 
   data() {
     return {
-      Rooms: [],
-      Messages: [],
-      SearchUsersList: [],
-      Token: "",
-      Username: "",
-      SearchUsers: "",
-      ChoiceName: "",
-      IdRoomChoice: "",
-      visible: true,
-      Message: "",
-      Online: "",
-      OnlineDate: "",
-      Scroll: 1,
-      Quantity: 1,
+      Rooms: [],              // список комнат в левом меню
+      Messages: [],           // список сообщений в выбранной комнате
+      SearchUsersList: [],    // список вариантов поиска пользователей
+      Token: "",              // токен
+      Username: "",           // имя самого клиента
+      SearchUsers: "",        // поле ввода имени искомого пользователя
+      ChoiceName: "",         // имя пользователя с которым ведется беседа в данный момент
+      IdRoomChoice: "",       // id выбранной комнаты
+      visible: true,          // видны ли сообщения
+      Message: "",            // вводимое новое сообщение
+      Online: "",             // онлайн собеседника - булевое значение
+      OnlineDate: "",         // дата последнего онлайна в случае оффлайна
+      Scroll: 1,              // номер пятерки в поиске пользователей
+      Quantity: 1,            // максимальное количество пятерок в поиске пользователей
     };
   },
 
@@ -164,7 +147,6 @@ export default {
       },5000);
     },
 
-    //this.SearchUsers.length>3 &&
     //Когда поле ввода заполняется - переменная получает значение мгновенно
     Input_Username(event) {
       this.SearchUsers = event.target.value;
@@ -190,6 +172,7 @@ export default {
       }
     },
 
+    //когда пользователь выбрал пользователя курсором при поиске, а не нажатием enter во время ручного ввода
     BeforeSearch(Name){
       this.SearchUsers = Name
       this.Scroll = 1
@@ -223,7 +206,7 @@ export default {
       }
     },
 
-
+    //увеличивает значение скролла на 1 при нажатии на правую кнопку во время поиска пользователей
     ScrollPlus() {
       this.Scroll = this.Scroll + 1
       this.SearchUsersList = []
@@ -246,6 +229,7 @@ export default {
       }
     },
 
+    //уменьшает значение скролла при нажатии на левую стрелку при поиске пользователя
     ScrollMinus(){
       this.Scroll = this.Scroll-1
       this.SearchUsersList = []
@@ -308,12 +292,10 @@ export default {
         success: (response) => {
           const Da = response.data
           this.Rooms = []
-          //console.log(Da)
           for (let i = 0; i<Da.length; i++){
             this.Rooms.push({IdRoom: Da[i]["id"], NameUser: Da[i]["invited"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2), IsRead: Da[i][["is_read"]], User: Da[i]["message_sender"]})
           }
           this.Rooms.sort((prev, next) => next.LastDate - prev.LastDate)
-          //console.log(this.Rooms)
         }
       })
     },
@@ -360,7 +342,6 @@ export default {
           this.Online = response.online.is_online
           this.OnlineDate = response.online.date
           this.Messages = []
-          //console.log(response)
           for (let i = 0; i<Da.length; i++){
             this.Messages.push({Name: Da[i]["user"], Text: Da[i]["message"], LastDate: Number(Da[i]["date"].substr(0, 19).replaceAll("-","").replace("T","").replaceAll(":","")), Time: Da[i]["date"].substr(8, 2)+"."+Da[i]["date"].substr(5, 2)+"."+Da[i]["date"].substr(2, 2)+" "+Da[i]["date"].substr(11, 2)+":"+Da[i]["date"].substr(14, 2), IsRead: Da[i]["is_read"]})
           }
@@ -372,7 +353,6 @@ export default {
 
     //Если сюда обращается какой-либо метод - клиента выкидывает на страницу входа
     Go_Sign_In(){
-      //this.$router.go()
       $.ajax({
         url: "http://127.0.0.1:8000/auth/token/logout/",
         type: "POST",
@@ -396,7 +376,6 @@ export default {
       this.visible = false
     }
     if (!this.Token || this.Token===''){
-      //this.$router.go()
       this.$router.push('components/SignIn')
     }
     this.Update_Rooms()
@@ -717,7 +696,7 @@ nav{
   margin-left: .5rem;
   height: 1.5rem;
   width: 1.5rem;
-  padding-left: 0rem;
+  padding-left: 0;
 }
 .read{
   display: unset;
