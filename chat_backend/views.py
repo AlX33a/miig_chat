@@ -100,6 +100,13 @@ class APIChatDialogue(APIView):
             is_online = {"is_online": difference < support, "date": f"Сегодня {str(date + timedelta(hours=3))[11:16]}"}
         elif str(date + timedelta(days=1))[:10] == str(datetime.now(timezone.utc))[:10]:
             is_online = {"is_online": difference < support, "date": f"Вчера {str(date + timedelta(hours=3))[11:16]}"}
+        elif str(date)[:4] == str(datetime.now(timezone.utc))[:4]:
+            month = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
+
+            time = str(date + timedelta(hours=3))[5:16]
+            time_fix = f"{time[3:5]} {month[int(time[:2]) - 1]} {time[6:]}"
+
+            is_online = {"is_online": difference < support, "date": time_fix}
         else:
             is_online = {"is_online": difference < support, "date": str(date + timedelta(hours=3))[:16]}
 
@@ -111,7 +118,7 @@ class APIChatDialogue(APIView):
                         chat_dialogue[i].save()
 
         if dialogues:
-            if chat_dialogue_serializer:
+            if chat_dialogue:
                 if str(request.user) != chat_dialogue_serializer[-1]["user"]["username"] and bool(dialogues[0].is_read) is False:
                     dialogues[0].is_read = True
                     dialogues[0].save()
