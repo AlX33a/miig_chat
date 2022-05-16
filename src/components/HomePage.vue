@@ -256,7 +256,9 @@ export default {
     New_Message(){
       if (this.Message.length>499){
         alert("Длина сообщения не может превышать 499 символов. Ваше сообщение - " + this.Message.length)
-      }else {
+      }else if(this.Message.length===0){
+        alert("вы ничего не написали")
+      }else{
         $.ajax({
           url: "http://127.0.0.1:8000/api/v1/chat/",
           type: "POST",
