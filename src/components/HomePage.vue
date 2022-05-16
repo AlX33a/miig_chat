@@ -8,34 +8,42 @@
         <img class="menu" src="../img/leaf.jpg">
         <input v-model="SearchUsers" @input="Input_Username" @keyup.enter="Search_User" class="user_search" type="text" placeholder="Search">
       </nav>
-      <!--
+
+
+
       <div id="search" class="search_list">
+
         <div class="found-users-array">
-          <ul class="found-users-ul">
+          <ul class="found-users-ul" v-for="Name in SearchUsersList" v-bind:key = "Name.Name">
             <li>
-              <div class="found-user">
-                Username
+              <div class="found-user" @click="BeforeSearch(Name.Name)">
+                {{Name.Name}}
               </div>
             </li>
           </ul>
         </div>
-        <div class="page-manager">
-          <button class="left-arrow-btn left-green"></button>
-          <span class="page-counter">1/2</span>
-          <button class="right-arrow-btn right-green"></button>
+
+
+        <div class="page-manager" v-if="Quantity!==1 && Scroll!==1 && Scroll!==Quantity">
+          <button class="left-arrow-btn left-green" @click="ScrollMinus"></button>
+          <span class="page-counter">{{Scroll}}/{{Quantity}}</span>
+          <button class="right-arrow-btn right-green" @click="ScrollPlus"></button>
         </div>
-        <div class="page-manager">
+        <div class="page-manager" v-if="Quantity!==1 && Scroll===1">
           <button class="left-arrow-btn left-grey"></button>
-          <span class="page-counter">1/2</span>
-          <button class="right-arrow-btn right-green"></button>
+          <span class="page-counter">{{Scroll}}/{{Quantity}}</span>
+          <button class="right-arrow-btn right-green" @click="ScrollPlus"></button>
         </div>
-        <div class="page-manager">
-          <button class="left-arrow-btn left-green"></button>
-          <span class="page-counter">1/2</span>
+        <div class="page-manager" v-if="Quantity!==1 && Quantity===Scroll">
+          <button class="left-arrow-btn left-green" @click="ScrollMinus"></button>
+          <span class="page-counter">{{Scroll}}/{{Quantity}}</span>
           <button class="right-arrow-btn right-grey"></button>
         </div>
+
+
+
       </div>
-      -->
+
 
 
 
@@ -126,6 +134,7 @@ export default {
     return {
       Rooms: [],
       Messages: [],
+      SearchUsersList: [],
       Token: "",
       Username: "",
       SearchUsers: "",
@@ -134,7 +143,9 @@ export default {
       visible: true,
       Message: "",
       Online: "",
-      OnlineDate: ""
+      OnlineDate: "",
+      Scroll: 1,
+      Quantity: 1,
     };
   },
 
@@ -157,28 +168,105 @@ export default {
     //Когда поле ввода заполняется - переменная получает значение мгновенно
     Input_Username(event) {
       this.SearchUsers = event.target.value;
-      if (this.SearchUsers.length<13){
+      this.SearchUsersList=[]
+      this.Scroll = 1
+      this.Quantity = 1
+      if (this.SearchUsers.length<13 && this.SearchUsers.length!==0){
           $.ajax({
             url: "http://127.0.0.1:8000/api/v1/search/",
             type: "GET",
             headers: {'Authorization': "Token " + sessionStorage.getItem('AuthToken')},
             data: {
-              skroll: 1,
+              scroll: this.Scroll,
               user: this.SearchUsers,
             },
             success: (response) => {
-              console.log(response)
+              for (let i = 0; i<response.data.length; i++){
+                this.SearchUsersList.push({Name: response.data[i]["username"]})
+              }
+              this.Quantity = response["quantity"]
             }
           })
       }
     },
 
-
-    //Когда поле ввода заполняется - переменная получает значение мгновенно
-    Input_Message(event){
-      this.Message = event.target.value;
+    BeforeSearch(Name){
+      this.SearchUsers = Name
+      this.Scroll = 1
+      this.Quantity = 1
+      this.SearchUsersList = []
+      this.Search_User()
     },
 
+    //Когда поле ввода заполняется - переменная получает значение мгновенно
+    Input_Message(event) {
+      this.Message = event.target.value;
+      this.SearchUsersList = []
+      this.Scroll = 1
+      this.Quantity = 1
+      if (this.SearchUsers.length < 13 && this.SearchUsers.length !== 0) {
+        $.ajax({
+          url: "http://127.0.0.1:8000/api/v1/search/",
+          type: "GET",
+          headers: {'Authorization': "Token " + sessionStorage.getItem('AuthToken')},
+          data: {
+            scroll: this.Scroll,
+            user: this.SearchUsers,
+          },
+          success: (response) => {
+            for (let i = 0; i < response.data.length; i++) {
+              this.SearchUsersList.push({Name: response.data[i]["username"]})
+            }
+            this.Quantity = response["quantity"]
+          }
+        })
+      }
+    },
+
+
+    ScrollPlus() {
+      this.Scroll = this.Scroll + 1
+      this.SearchUsersList = []
+      if (this.SearchUsers.length < 13 && this.SearchUsers.length !== 0) {
+        $.ajax({
+          url: "http://127.0.0.1:8000/api/v1/search/",
+          type: "GET",
+          headers: {'Authorization': "Token " + sessionStorage.getItem('AuthToken')},
+          data: {
+            scroll: this.Scroll,
+            user: this.SearchUsers,
+          },
+          success: (response) => {
+            for (let i = 0; i < response.data.length; i++) {
+              this.SearchUsersList.push({Name: response.data[i]["username"]})
+            }
+            this.Quantity = response["quantity"]
+          }
+        })
+      }
+    },
+
+    ScrollMinus(){
+      this.Scroll = this.Scroll-1
+      this.SearchUsersList = []
+      if (this.SearchUsers.length < 13 && this.SearchUsers.length !== 0) {
+        $.ajax({
+          url: "http://127.0.0.1:8000/api/v1/search/",
+          type: "GET",
+          headers: {'Authorization': "Token " + sessionStorage.getItem('AuthToken')},
+          data: {
+            scroll: this.Scroll,
+            user: this.SearchUsers,
+          },
+          success: (response) => {
+            for (let i = 0; i < response.data.length; i++) {
+              this.SearchUsersList.push({Name: response.data[i]["username"]})
+            }
+            this.Quantity = response["quantity"]
+          }
+        })
+      }
+    },
 
     //отправка одним пользователем сообщения
     New_Message(){
@@ -286,6 +374,12 @@ export default {
     //Если сюда обращается какой-либо метод - клиента выкидывает на страницу входа
     Go_Sign_In(){
       //this.$router.go()
+      $.ajax({
+        url: "http://127.0.0.1:8000/auth/token/logout/",
+        type: "POST",
+        headers: {'Authorization': "Token " + sessionStorage.getItem('AuthToken')},
+      })
+
       this.$router.push('components/SignIn')
     }
   },

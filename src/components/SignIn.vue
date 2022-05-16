@@ -93,7 +93,6 @@ export default {
 
   //Во время перехода отчищаются сессионные переменные
   mounted() {
-
     sessionStorage.setItem('AuthToken', "")
     sessionStorage.setItem('Username', "")
     sessionStorage.setItem('ChoiceName', "")
