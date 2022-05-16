@@ -341,7 +341,6 @@ export default {
         error: (data) => {
           alert(data.responseJSON.data)
           this.SearchUsers = ""
-          this.$router.go()
         }
       })
     },
@@ -483,6 +482,11 @@ nav{
   padding-top: .5rem;
   padding-bottom: .5rem;
   border-bottom: 1px grey solid;
+}
+
+.found-user:hover{
+  background-color: rgb(235, 235, 235);
+  border-radius: 15px;
 }
 .page-manager{
   display: flex;
