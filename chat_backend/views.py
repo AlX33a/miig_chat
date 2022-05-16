@@ -85,11 +85,22 @@ class APIChatDialogue(APIView):
         chat_dialogue = ChatToDialogue.objects.filter(dialogue=dialogue_id)
         chat_dialogue_serializer = ChatDialogueSerializers(chat_dialogue, many=True).data
 
+        dialogues = Dialogue.objects.filter(id=dialogue_id)
+        dialogue_serializer = DialogueSerializers(dialogues, many=True).data
+
+        creator = dialogue_serializer[0]["creator"]["username"]
+        invited = dialogue_serializer[0]["invited"]["username"]
+
+        if str(request.user) == creator:
+            invited_user = invited
+        else:
+            invited_user = creator
+
         dialogues = Dialogue.objects.filter(Q(creator=request.user) & Q(id=dialogue_id) | Q(invited=request.user) & Q(id=dialogue_id))
 
         tracking_user(request)
 
-        user = User.objects.filter(username=APIDialogue.get(request).data["data"][int(dialogue_id) - 1]["invited"])
+        user = User.objects.filter(username=invited_user)
 
         date = TrackingUser.objects.filter(user=user[0])[0].date
         difference = datetime.now(timezone.utc) - date
