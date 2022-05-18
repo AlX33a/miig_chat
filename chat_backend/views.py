@@ -181,7 +181,8 @@ class APIUserSearch(APIView):
                 if len(five_options) == 5:
                     scrolling_options += [five_options]
                     five_options = []
-            scrolling_options += [five_options]
+            if five_options:
+                scrolling_options += [five_options]
 
             return Response({"quantity": len(scrolling_options), "data": scrolling_options[scroll_number - 1]}, status=201)
         return Response({"quantity": 1, "data": [{"username": "Пользователь не найден."}]}, status=201)
