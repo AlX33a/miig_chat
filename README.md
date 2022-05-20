@@ -23,7 +23,7 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-**Createsuperuser django: (not necessary)**
+**Createsuperuser django: (for developers)**
 
 ```
 python manage.py createsuperuser
