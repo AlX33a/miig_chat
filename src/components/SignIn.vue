@@ -5,13 +5,11 @@
 
         <!--Группа кнопок входа и регистрации-->
         <p class="btn_group">
-          <a class="btn login" text-decoration="none">
+          <a class="login" text-decoration="none">
             Вход
           </a>
-          <router-link to="components/SignUp">
-            <a class="btn sign_up" text-decoration="none">
-              Регистрация
-            </a>
+          <router-link class="sign_up" to="components/SignUp" >
+            Регистрация
           </router-link>
         </p>
 
@@ -93,7 +91,6 @@ export default {
 
   //Во время перехода отчищаются сессионные переменные
   mounted() {
-
     sessionStorage.setItem('AuthToken', "")
     sessionStorage.setItem('Username', "")
     sessionStorage.setItem('ChoiceName', "")
@@ -118,9 +115,6 @@ export default {
 
 <style scoped>
 
-.form-button:hover{
-  background-color: lightskyblue;
-}
 
 .card{
   background-color: #fff;
@@ -151,59 +145,43 @@ export default {
   flex-direction: column;
   align-items: center;
 }
-.btn{
-  display: inline-block;
-  font-weight: 400;
-  line-height: 1.5;
-  text-align: center;
-  vertical-align: middle;
-  font-size: 1rem;
-  color: blue;
-  background-color: #fff;
-  border-color: blue;
-  margin-right: 0;
-  margin-left: 0;
-  padding-left: .2rem;
-  padding-right: .375rem;
-  cursor: pointer;
-  padding-top: .2rem;
-
-}
 .btn_group{
-  display: inline-flex;
+  display: flex;
+  width: 16rem;
 }
 .login{
-  border-radius: 25px 0 0 25px;
+  border-radius: 2rem 0 0 2rem;
   text-align: center;
-
-}
-
-.login:hover{
+  background-color: rgb(158, 158, 255);
+  height: 1.6rem;
   color: #fff;
+  padding-top: .25rem;
+  width: 8rem;
 }
+
 
 .sign_up{
-  border-radius: 0 25px 25px 0;
-  color: blue;
-  background-color: #fff;
-  border-color: blue;
-  text-decoration: none;
-  vertical-align: middle;
-  font-size: 1rem;
-  padding-right: .3rem;
-  padding-left: .25rem;
-  font-family:Arial, Helvetica, sans-serif;
+  border-radius: 0 2rem 2rem 0;
   text-align: center;
+  background-color: #fff;
+  height: 1.5rem;
+  color: rgb(158, 158, 255);
+  border: #fff .05rem solid;
+  padding-top: .25rem;
+  width: 8rem;
+  text-decoration: none;
+  transition-duration: .5s;
+  cursor: pointer;
 }
-
-.login,.sign_up:hover{
-  color: #fff;
-  background-color: blue;
+.sign_up:hover{
+  border: rgb(158, 158, 255) .05rem solid;
+  box-shadow:inset 0rem 0rem .325rem rgb(158, 158, 255);
 }
 .form-button{
   width: 100%;
   display: block;
   position: relative;
+  cursor: pointer;
 }
 .form-input{
   border-radius: 2px;
@@ -217,12 +195,19 @@ export default {
   right: 0;
   top: 0;
   border: 1px solid transparent;
-  background-color: blue;
-  color: #fff;
+  background-color: transparent;
+  color: rgb(158, 158, 255);
+  border: rgb(158, 158, 255) .05rem solid;
   font-family: fantasy;
   padding: .15rem 2rem;
   border-radius: 25px;
   font-size: 1.25rem;
+  transition-duration: .5s;
+  cursor: pointer;
+}
+.form-button:hover{
+  box-shadow: 0rem 0rem .5rem rgb(158, 158, 255);
+  color: rgb(89, 160, 44);
 }
 .container_btn{
   display: flex;

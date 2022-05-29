@@ -5,14 +5,10 @@
 
         <!--Группа кнопок входа и регистрации-->
         <p class="btn_group">
-          <router-link to="components/SignIn">
-
-            <a class="btn login" text-decoration="none">
-              Вход
-            </a>
-
+          <router-link to="components/SignIn" class="login">
+            Вход
           </router-link>
-          <a class="btn sign_up" text-decoration="none">
+          <a class="sign_up" text-decoration="none">
             Регистрация
           </a>
         </p>
@@ -142,10 +138,6 @@ export default {
 <style scoped>
 
 
-.form-button:hover{
-  background-color: lightskyblue;
-}
-
 
 .card{
   background-color: #fff;
@@ -176,51 +168,43 @@ export default {
   flex-direction: column;
   align-items: center;
 }
-.btn{
-  display: inline-block;
-  font-weight: 400;
-  line-height: 1.5;
+.btn_group{
+  display: flex;
+  width: 16rem;
+}
+.sign_up{
+  border-radius: 0 2rem 2rem 0;
   text-align: center;
-  vertical-align: middle;
-  font-size: 1rem;
-  border: 1px solid transparent;
-  color: blue;
-  background-color: #fff;
-  margin-right: 0;
-  margin-left: 0;
-  padding-left: .2rem;
-  padding-right: .375rem;
-  cursor: pointer;
-  padding-top: .2rem;
+  background-color: rgb(158, 158, 255);
+  height: 1.6rem;
+  color: #fff;
+  padding-top: .25rem;
+  width: 8rem;
+  
+}
 
+
+.login{
+  border-radius: 2rem 0 0 2rem;
+  text-align: center;
+  background-color: #fff;
+  height: 1.5rem;
+  color: rgb(158, 158, 255);
+  border: #fff .05rem solid;
+  padding-top: .25rem;
+  width: 8rem;
+  transition-duration: .5s;
+  text-decoration: none;
+  cursor: pointer;
+}
+.login:hover{
+  border: rgb(158, 158, 255) .05rem solid;
+  box-shadow:inset 0rem 0rem .25rem rgb(158, 158, 255);
 }
 .btn_group{
   display: inline-flex;
 }
-.login{
-  border-radius: 25px 0 0 25px;
-  text-align: center;
-  text-decoration: none;
-}
 
-.sign_up{
-  border-radius: 0 25px 25px 0;
-  color: blue;
-  background-color: #fff;
-  border-color: blue;
-  text-decoration: none;
-  vertical-align: middle;
-  font-size: 1rem;
-  padding-right: .3rem;
-  padding-left: .25rem;
-  font-family:Arial, Helvetica, sans-serif;
-  text-align: center;
-}
-
-.login:hover,.sign_up{
-  color: #fff;
-  background-color: blue;
-}
 .form-button{
   width: 100%;
   display: block;
@@ -238,12 +222,19 @@ export default {
   right: 0;
   top: 0;
   border: 1px solid transparent;
-  background-color: blue;
-  color: #fff;
+  background-color: transparent;
+  color: rgb(158, 158, 255);
+  border: rgb(158, 158, 255) .05rem solid;
   font-family: fantasy;
   padding: .15rem 2rem;
   border-radius: 25px;
   font-size: 1.25rem;
+  transition-duration: .5s;
+  cursor: pointer;
+}
+.form-button:hover{
+  box-shadow: 0rem 0rem .5rem rgb(158, 158, 255);
+  color: rgb(89, 160, 44);
 }
 .container_btn{
   display: flex;
