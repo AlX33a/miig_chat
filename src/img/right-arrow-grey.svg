@@ -1,0 +1,12 @@
+<svg width="256" height="256" xmlns="http://www.w3.org/2000/svg" xml:space="preserve" version="1.1">
+ <desc>Created with Fabric.js 1.7.22</desc>
+
+ <g>
+  <title>Layer 1</title>
+  <g id="svg_1" transform="rotate(180, 127.999, 127.999) translate(128, 128) scale(0.72)">
+   <g id="svg_2" fill-rule=" nonzero" fill=" none" stroke-miterlimit="10" stroke-linejoin=" miter" stroke-linecap=" butt" stroke-dasharray=" none" stroke-width="0" stroke=" none" transform="translate(-175.05 -175.05000000000004) scale(3.89 3.89)">
+    <path id="svg_3" fill-rule=" nonzero" fill=" rgb(205,205,205)" stroke-miterlimit="10" stroke-linejoin=" miter" stroke-dasharray=" none" stroke=" none" stroke-linecap=" butt" d="m2.15,41.551l82.305,-40.384c3.131,-1.536 6.524,1.558 5.282,4.817l-14.342,37.648c-0.336,0.881 -0.336,1.854 0,2.735l14.342,37.648c1.241,3.259 -2.152,6.353 -5.282,4.817l-82.305,-40.383c-2.867,-1.406 -2.867,-5.492 0,-6.898z"/>
+   </g>
+  </g>
+ </g>
+</svg>
