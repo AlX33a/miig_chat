@@ -230,6 +230,7 @@ nav{
 }
 .unread{
   display: unset;
+  opacity: 50%;
 }
 .read{
   display: unset;

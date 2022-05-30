@@ -705,6 +705,7 @@ nav{
 }
 .unread{
   display: unset;
+  opacity: 50%;
 }
 /*Цвета сообщений*/
 .host-messege{
